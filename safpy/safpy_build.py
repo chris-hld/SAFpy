@@ -30,13 +30,31 @@ ffibuilder.cdef("""
 # produce, and some C source code as a string.  This C code needs
 # to make the declarated functions, types and globals available,
 # so it is often just the "#include".
-ffibuilder.set_source("_safpy",
-"""
-    #define SAF_USE_OPEN_BLAS_AND_LAPACKE
+c_header_source = """
     #include "../../Spatial_Audio_Framework/framework/include/saf.h"   // the C header of the library
-""",
-     libraries=['../../Spatial_Audio_Framework/build/framework/saf', # library name, for the linker
-                'lapacke'])
+"""
+
+libraries = ['../../Spatial_Audio_Framework/build/framework/saf']  # library name, for the linker
+
+# CHOOSE HERE FOR NOW:
+SAF_PERFORMANCE_LIB = "SAF_USE_INTEL_MKL"
+
+if SAF_PERFORMANCE_LIB == "SAF_USE_INTEL_MKL":
+    c_header_source += """
+        #define SAF_USE_INTEL_MKL
+        """
+    libraries.append('mkl_rt')
+    library_dirs = ["/opt/anaconda3/lib/"]
+
+if SAF_PERFORMANCE_LIB == "SAF_USE_OPEN_BLAS_AND_LAPACKE":
+    c_header_source += """
+        #define SAF_USE_OPEN_BLAS_AND_LAPACKE
+        """
+    libraries.append('lapacke')
+    library_dirs = []
+
+ffibuilder.set_source("_safpy", c_header_source, libraries=libraries,
+                      library_dirs=library_dirs)
 
 if __name__ == "__main__":
     ffibuilder.compile(verbose=True)

@@ -1,28 +1,33 @@
+import os.path
 from cffi import FFI
 ffibuilder = FFI()
+
+this_dir = os.path.abspath(os.path.dirname(__file__))
+saf_path = os.path.join(this_dir, '..', '..', 'Spatial_Audio_Framework')
 
 # cdef() expects a single string declaring the C types, functions and
 # globals needed to use the shared object. It must be in valid C syntax.
 ffibuilder.cdef("""
 
-    typedef float _Complex float_complex;
-    typedef double _Complex double_complex;
+typedef float _Complex float_complex;
+typedef double _Complex double_complex;
 
-    long double factorial(int n);
+long double factorial(int n);
 
-    void getSHreal(/* Input Arguments */
-               int order,
-               float* dirs_rad,
-               int nDirs,
-               /* Output Arguments */
-               float* Y);
+void getSHreal(/* Input Arguments */
+            int order,
+            float* dirs_rad,
+            int nDirs,
+            /* Output Arguments */
+            float* Y);
 
-    void getSHcomplex(/* Input Arguments */
-                      int order,
-                      float* dirs_rad,
-                      int nDirs,
-                      /* Output Arguments */
-                      float_complex* Y);
+void getSHcomplex(/* Input Arguments */
+                    int order,
+                    float* dirs_rad,
+                    int nDirs,
+                    /* Output Arguments */
+                    float_complex* Y);
+
 
 """)
 
@@ -30,11 +35,10 @@ ffibuilder.cdef("""
 # produce, and some C source code as a string.  This C code needs
 # to make the declarated functions, types and globals available,
 # so it is often just the "#include".
-c_header_source = """
-    #include "../../Spatial_Audio_Framework/framework/include/saf.h"   // the C header of the library
+c_header_source = f"""
+    #include "{saf_path}/framework/include/saf.h"  // the C header of the lib
 """
-
-libraries = ['../../Spatial_Audio_Framework/build/framework/saf']  # library name, for the linker
+libraries = [saf_path + "/build/framework/saf"]  # library name, for the linker
 
 # CHOOSE HERE FOR NOW:
 SAF_PERFORMANCE_LIB = "SAF_USE_INTEL_MKL"

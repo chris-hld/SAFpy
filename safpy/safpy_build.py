@@ -52,7 +52,8 @@ c_header_source = f"""
 """
 libraries = [saf_path + "/build/framework/saf"]  # library name, for the linker
 
-# CHOOSE HERE FOR NOW:
+
+# CHOOSE PERFORMANCE LIB HERE FOR NOW:
 SAF_PERFORMANCE_LIB = "SAF_USE_INTEL_MKL"
 
 if SAF_PERFORMANCE_LIB == "SAF_USE_INTEL_MKL":
@@ -60,7 +61,7 @@ if SAF_PERFORMANCE_LIB == "SAF_USE_INTEL_MKL":
         #define SAF_USE_INTEL_MKL
         """
     libraries.append('mkl_rt')
-    library_dirs = ["/opt/anaconda3/lib/"]
+    library_dirs = ["/opt/anaconda3/lib/"]  # assuming anaconda intel mkl
 
 if SAF_PERFORMANCE_LIB == "SAF_USE_OPEN_BLAS_AND_LAPACKE":
     c_header_source += """
@@ -68,6 +69,14 @@ if SAF_PERFORMANCE_LIB == "SAF_USE_OPEN_BLAS_AND_LAPACKE":
         """
     libraries.append('lapacke')
     library_dirs = []
+
+if SAF_PERFORMANCE_LIB == "SAF_USE_APPLE_ACCELERATE":
+    c_header_source += """
+        #define SAF_USE_APPLE_ACCELERATE
+        """
+    # libraries.append()
+    library_dirs = []
+
 
 ffibuilder.set_source("_safpy", c_header_source, libraries=libraries,
                       library_dirs=library_dirs)

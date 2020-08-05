@@ -28,6 +28,18 @@ void getSHcomplex(/* Input Arguments */
                     /* Output Arguments */
                     float_complex* Y);
 
+void generateVBAPgainTable3D(/* Input arguments */
+                             float* ls_dirs_deg,
+                             int L,
+                             int az_res_deg,
+                             int el_res_deg,
+                             int omitLargeTriangles,
+                             int enableDummies,
+                             float spread,
+                             /* Output arguments */
+                             float** gtable,
+                             int* N_gtable,
+                             int* nTriangles);
 
 """)
 

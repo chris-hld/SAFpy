@@ -13,6 +13,13 @@ ffibuilder.cdef("""
 typedef float _Complex float_complex;
 typedef double _Complex double_complex;
 
+typedef enum _AFSTFT_FDDATA_FORMAT{
+    AFSTFT_BANDS_CH_TIME, /**< nBands x nChannels x nTimeHops */
+    AFSTFT_TIME_CH_BANDS  /**< nTimeHops x nChannels x nBands */
+
+}AFSTFT_FDDATA_FORMAT;
+
+
 long double factorial(int n);
 
 void getSHreal(/* Input Arguments */
@@ -41,6 +48,14 @@ void generateVBAPgainTable3D(/* Input arguments */
                              float** gtable,
                              int* N_gtable,
                              int* nTriangles);
+
+void afSTFT_create(void ** const phSTFT,
+                   int nCHin,
+                   int nCHout,
+                   int hopsize,
+                   int lowDelayMode,
+                   int hybridmode,
+                   AFSTFT_FDDATA_FORMAT format);
 
 """)
 

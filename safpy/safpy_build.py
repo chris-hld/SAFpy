@@ -2,6 +2,7 @@ import os.path
 from cffi import FFI
 ffibuilder = FFI()
 
+home_dir = os.path.expanduser('~')
 this_dir = os.path.abspath(os.path.dirname(__file__))
 saf_path = os.path.join(this_dir, '..', '..', 'Spatial_Audio_Framework')
 
@@ -43,14 +44,11 @@ void generateVBAPgainTable3D(/* Input arguments */
 
 """)
 
-# set_source() gives the name of the python extension module to
-# produce, and some C source code as a string.  This C code needs
-# to make the declarated functions, types and globals available,
-# so it is often just the "#include".
-c_header_source = f"""
-    #include "{saf_path}/framework/include/saf.h"  // the C header of the lib
-"""
-libraries = [saf_path + "/build/framework/saf"]  # library name, for the linker
+# Populate these
+c_header_source = ""
+include_dirs = []
+libraries = []
+library_dirs = []
 
 
 # CHOOSE PERFORMANCE LIB HERE FOR NOW:
@@ -58,28 +56,42 @@ SAF_PERFORMANCE_LIB = "SAF_USE_INTEL_MKL"
 
 if SAF_PERFORMANCE_LIB == "SAF_USE_INTEL_MKL":
     c_header_source += """
-        #define SAF_USE_INTEL_MKL
-        """
-    libraries.append('mkl_rt')
-    library_dirs = ["/opt/anaconda3/lib/"]  # assuming anaconda intel mkl
+    #define SAF_USE_INTEL_MKL
+    """
+    libraries.append("mkl_rt")
+    # for: conda install mkl mkl-include
+    include_dirs += [f"{home_dir}/anaconda3/include", "/opt/anaconda3/include/"]
+    library_dirs += [f"{home_dir}/anaconda3/lib/", "/opt/anaconda3/lib/"]
 
 if SAF_PERFORMANCE_LIB == "SAF_USE_OPEN_BLAS_AND_LAPACKE":
     c_header_source += """
-        #define SAF_USE_OPEN_BLAS_AND_LAPACKE
-        """
+    #define SAF_USE_OPEN_BLAS_AND_LAPACKE
+    """
     libraries.append('lapacke')
-    library_dirs = []
 
 if SAF_PERFORMANCE_LIB == "SAF_USE_APPLE_ACCELERATE":
     c_header_source += """
-        #define SAF_USE_APPLE_ACCELERATE
-        """
-    # libraries.append()
-    library_dirs = []
+    #define SAF_USE_APPLE_ACCELERATE
+    """
+
+# set_source() gives the name of the python extension module to
+# produce, and some C source code as a string.  This C code needs
+# to make the declarated functions, types and globals available,
+# so it is often just the "#include".
+c_header_source += f"""
+    #include "{saf_path}/framework/include/saf.h"  // the C header of the lib
+    """
+libraries.append(saf_path + "/build/framework/saf")  # lib name, for the linker
+
+print("Compiling _safpy with:")
+print(f"C_Header_Source: {c_header_source}")
+print(f"include_dirs: {include_dirs}")
+print(f"libraries: {libraries}")
+print(f"library_dirs: {library_dirs}")
 
 
-ffibuilder.set_source("_safpy", c_header_source, libraries=libraries,
-                      library_dirs=library_dirs)
+ffibuilder.set_source("_safpy", c_header_source, include_dirs=include_dirs,
+                      libraries=libraries, library_dirs=library_dirs)
 
 if __name__ == "__main__":
     ffibuilder.compile(verbose=True)

@@ -41,5 +41,11 @@ def test_getSHcomplex():
     assert_allclose(a, b.T, atol=10e-6)
 
 
-test_getSHreal()
-test_getSHcomplex()
+def test_vbap_gaintable_3d():
+    vecs = spa.grids.load_t_design(10)
+    azi, zen, r = spa.utils.cart2sph(*vecs.T)
+    azi_deg = spa.utils.rad2deg(azi)
+    zen_deg = spa.utils.rad2deg(zen)
+    gt = safpy.vbap.generateVBAPgainTable3D(np.c_[azi_deg, zen_deg-90], 1, 1)
+
+    assert_allclose(np.sum(gt, axis=1), np.ones(gt.shape[0]))

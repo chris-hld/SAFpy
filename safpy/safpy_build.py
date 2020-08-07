@@ -66,28 +66,28 @@ libraries = []
 library_dirs = []
 
 
-# CHOOSE PERFORMANCE LIB HERE FOR NOW:
-SAF_PERFORMANCE_LIB = "SAF_USE_INTEL_MKL"
+# # CHOOSE PERFORMANCE LIB HERE FOR NOW:
+# SAF_PERFORMANCE_LIB = "SAF_USE_INTEL_MKL"
 
-if SAF_PERFORMANCE_LIB == "SAF_USE_INTEL_MKL":
-    c_header_source += """
-    #define SAF_USE_INTEL_MKL
-    """
-    libraries.append("mkl_rt")
-    # for: conda install mkl mkl-include
-    include_dirs += [f"{home_dir}/anaconda3/include", "/opt/anaconda3/include/"]
-    library_dirs += [f"{home_dir}/anaconda3/lib/", "/opt/anaconda3/lib/"]
+# if SAF_PERFORMANCE_LIB == "SAF_USE_INTEL_MKL":
+#     c_header_source += """
+#     #define SAF_USE_INTEL_MKL
+#     """
+#     libraries.append("mkl_rt")
+#     # for: conda install mkl mkl-include
+#     include_dirs += [f"{home_dir}/anaconda3/include", "/opt/anaconda3/include/"]
+#     library_dirs += [f"{home_dir}/anaconda3/lib/", "/opt/anaconda3/lib/"]
 
-if SAF_PERFORMANCE_LIB == "SAF_USE_OPEN_BLAS_AND_LAPACKE":
-    c_header_source += """
-    #define SAF_USE_OPEN_BLAS_AND_LAPACKE
-    """
-    libraries.append('lapacke')
+# if SAF_PERFORMANCE_LIB == "SAF_USE_OPEN_BLAS_AND_LAPACKE":
+#     c_header_source += """
+#     #define SAF_USE_OPEN_BLAS_AND_LAPACKE
+#     """
+#     libraries.append('lapacke')
 
-if SAF_PERFORMANCE_LIB == "SAF_USE_APPLE_ACCELERATE":
-    c_header_source += """
-    #define SAF_USE_APPLE_ACCELERATE
-    """
+# if SAF_PERFORMANCE_LIB == "SAF_USE_APPLE_ACCELERATE":
+#     c_header_source += """
+#     #define SAF_USE_APPLE_ACCELERATE
+#     """
 
 # set_source() gives the name of the python extension module to
 # produce, and some C source code as a string.  This C code needs

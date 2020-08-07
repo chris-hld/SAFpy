@@ -109,4 +109,4 @@ ffibuilder.set_source("_safpy", c_header_source, include_dirs=include_dirs,
                       libraries=libraries, library_dirs=library_dirs)
 
 if __name__ == "__main__":
-    ffibuilder.compile(verbose=True)
+    ffibuilder.compile(tmpdir=this_dir, verbose=True)

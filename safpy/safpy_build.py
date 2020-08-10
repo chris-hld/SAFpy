@@ -59,6 +59,16 @@ void afSTFT_create(void ** const phSTFT,
 
 void afSTFT_destroy(void ** const phSTFT);
 
+int afSTFT_getNBands(void * const hSTFT);
+
+void afSTFT_getCentreFreqs(void * const hSTFT,
+                           float fs,
+                           int nBands,
+                           float* freqVector);
+
+int afSTFT_getProcDelay(void * const hSTFT);
+
+
 """)
 
 # Populate these

@@ -48,4 +48,7 @@ def test_vbap_gaintable_3d():
     zen_deg = spa.utils.rad2deg(zen)
     gt = safpy.vbap.generateVBAPgainTable3D(np.c_[azi_deg, zen_deg-90], 1, 1)
 
-    assert_allclose(np.sum(gt, axis=1), np.ones(gt.shape[0]))
+    assert(np.all(np.count_nonzero(gt, axis=1) <= 3))
+    assert_allclose(np.sum(gt**2, axis=1), np.ones(gt.shape[0]), atol=10e-6)
+
+test_vbap_gaintable_3d()

@@ -13,5 +13,3 @@ def whoami():
 
 def factorial(n):
     return np.longdouble(lib.factorial(n))
-
-

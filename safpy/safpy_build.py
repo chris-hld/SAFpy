@@ -57,6 +57,8 @@ void afSTFT_create(void ** const phSTFT,
                    int hybridmode,
                    AFSTFT_FDDATA_FORMAT format);
 
+void afSTFT_destroy(void ** const phSTFT);
+
 """)
 
 # Populate these

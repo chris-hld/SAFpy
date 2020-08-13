@@ -25,9 +25,8 @@ def getSHreal(order, dirs_deg):
     dirs_deg = np.ascontiguousarray(dirs_deg, dtype=np.float32)
     nDirs = np.shape(dirs_deg)[0]
     Y = np.zeros(((order+1)**2, nDirs), dtype=np.float32)
-    Y_ptr = ffi.cast("float *", ffi.from_buffer(Y))  # out pointer
-    lib.getSHreal(order, ffi.cast("float *", ffi.from_buffer(dirs_deg)),
-                  nDirs, Y_ptr)
+    lib.getSHreal(order, ffi.from_buffer("float *", dirs_deg),
+                  nDirs, ffi.from_buffer("float *", Y))
     return Y
 
 
@@ -38,7 +37,6 @@ def getSHcomplex(order, dirs_deg):
     assert(np.shape(dirs_deg)[1] == 2)
     nDirs = np.shape(dirs_deg)[0]
     Y = np.zeros(((order+1)**2, nDirs), dtype=np.complex64)
-    Y_ptr = ffi.cast("float_complex *", ffi.from_buffer(Y))  # out pointer
-    lib.getSHcomplex(order, ffi.cast("float *", ffi.from_buffer(dirs_deg)),
-                     nDirs, Y_ptr)
+    lib.getSHcomplex(order, ffi.from_buffer("float *", dirs_deg),
+                     nDirs, ffi.from_buffer("float_complex *", Y))
     return Y

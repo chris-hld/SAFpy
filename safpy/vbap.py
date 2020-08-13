@@ -32,8 +32,8 @@ def generateVBAPgainTable3D(ls_dirs_deg, az_res_deg, el_res_deg,
         DESCRIPTION.
 
     """
-    ls_dirs_deg = np.atleast_2d(ls_dirs_deg)
-    ls_dirs_deg = np.ascontiguousarray(ls_dirs_deg, dtype=np.float32)
+    ls_dirs_deg = np.ascontiguousarray(np.atleast_2d(ls_dirs_deg),
+                                       dtype=np.float32)
     assert(np.shape(ls_dirs_deg)[1] == 2)
     num_ls = np.shape(ls_dirs_deg)[0]
 

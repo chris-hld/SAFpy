@@ -35,13 +35,16 @@ class AfSTFT():
         afstft_format = 0  # < nBands x nChannels x nTimeHops
         # let the compiler fill in the rest...
 
-        afstft_handle = ffi.new("void ** const")
+        afstft_handle = ffi.new("void **")
 
         lib.afSTFT_create(afstft_handle,
                           num_ch_in, num_ch_out, hopsize,
                           LOWDELAYMODE, HYBRIDMODE, afstft_format)
         self._afstft_handle = afstft_handle  # keep alive
         print(f"Created AFSTFT instance at {self._afstft_handle[0]}")
+
+        # flush
+        self.clear_buffers()
 
         self._num_bands = self.get_num_bands()
         self._center_freqs = self.get_center_freqs(fs)
@@ -108,6 +111,17 @@ class AfSTFT():
         """
         return lib.afSTFT_getProcDelay(self._afstft_handle[0])
 
+    def clear_buffers(self):
+        """
+        Flushes time-domain buffers with zeros.
+
+        Returns
+        -------
+        None.
+
+        """
+        lib.afSTFT_clearBuffers(self._afstft_handle[0])
+
     def forward(self, in_frame_td):
         in_frame_td = np.atleast_2d(in_frame_td)
         in_frame_td = np.ascontiguousarray(in_frame_td, dtype=np.float32)
@@ -120,23 +134,22 @@ class AfSTFT():
 
         num_bands = self._num_bands
 
-        data_td_ptr = ffi.new(f"float* [{num_ch_in}]")  # array of ptrs
+        #data_td_ptr = ffi.new(f"float* [{num_ch_in}]")  # ptr to ptr/arr
+        #for idxch, ch_view in enumerate(np.split(in_frame_td, num_ch_in)):
+        #    data_td_ptr[idxch] = ffi.from_buffer("float *", ch_view)
+        data_td_ptr = ffi.cast("float **",
+                               lib.malloc2d(num_ch_in, framesize,
+                                            ffi.sizeof("float")))
         # populate
-        for idxch in range(num_ch_in):
-            data_td_ptr[idxch] = ffi.from_buffer("float *",
-                                                 in_frame_td[idxch, :])
+        for idx_ch in range(num_ch_in):
+            data_td_ptr[idx_ch] = ffi.cast("float *",
+                                           in_frame_td[idx_ch, :].ctypes.data)
 
-        
-        #data_fd_arr = ffi.new(f"float_complex [{num_bands}] [{num_ch_in}] [{num_hops}]")
-
-        #data_fd_ptr = lib.malloc3d(num_bands, num_ch_in, num_hops, ffi.sizeof("float_complex"))
-        #data_fd_ptr = ffi.new("float_complex ***")
-        
         data_fd_ptr = ffi.cast("float_complex ***",
-                               lib.malloc3d(num_bands, num_ch_in, num_hops, ffi.sizeof("float_complex")
-                               ))
-  
-        lib.afSTFT_forward(self._afstft_handle, data_td_ptr, framesize,
+                               lib.malloc3d(num_bands, num_ch_in, num_hops,
+                                            ffi.sizeof("float_complex")))
+
+        lib.afSTFT_forward(self._afstft_handle[0], data_td_ptr, framesize,
                            data_fd_ptr)
 
         # unpack
@@ -144,7 +157,79 @@ class AfSTFT():
                                                  num_bands*num_ch_in*num_hops),
                                       dtype=np.complex64, ndmin=3),
                              (num_bands, num_ch_in, num_hops))
-        #lib.free(data_fd_ptr) ?!
+        #lib.free(data_fd_ptr)  # ?!
         return data_fd
-    
 
+
+    def backward(self, in_data_fd):
+        in_data_fd = np.ascontiguousarray(in_data_fd, dtype=np.complex64)
+
+        num_bands = self._num_bands
+        num_ch_out = in_data_fd.shape[1]
+        assert(num_ch_out == self._num_ch_out)
+        num_hops = in_data_fd.shape[2]
+        framesize = num_hops * self._hopsize
+
+        data_fd_ptr = ffi.cast("float_complex ***",
+                               lib.malloc3d(num_bands, num_ch_out, num_hops,
+                                            ffi.sizeof("float_complex")))
+
+        data_td_ptr = ffi.cast("float **", lib.malloc2d(num_ch_out, framesize,
+                                                        ffi.sizeof("float")))
+
+        # populate
+        for idx_band in range(num_bands):
+            for idx_ch in range(num_ch_out):
+                data_fd_ptr[idx_band][idx_ch] = ffi.cast("float_complex *",
+                                                         in_data_fd[idx_band, idx_ch, :].ctypes.data)
+
+        lib.afSTFT_backward(self._afstft_handle[0], data_fd_ptr, framesize,
+                            data_td_ptr)
+
+        # unpack
+        data_td = np.reshape(np.array(ffi.unpack(data_td_ptr[0],
+                                                 num_ch_out*framesize),
+                                      dtype=np.float32, ndmin=2),
+                             (num_ch_out, framesize))
+        return data_td
+
+
+    def forward_flat(self, in_frame_td):
+        in_frame_td = np.atleast_2d(in_frame_td)
+        in_frame_td = np.ascontiguousarray(in_frame_td, dtype=np.float32)
+
+        num_ch_in = in_frame_td.shape[0]
+        assert(num_ch_in == self._num_ch_in)
+        framesize = in_frame_td.shape[1]
+        assert(framesize % self._hopsize == 0)
+        num_hops = framesize // self._hopsize
+
+        num_bands = self._num_bands
+
+        data_fd = np.ones((num_bands, num_ch_in, num_hops),
+                           dtype=np.complex64)
+
+        lib.afSTFT_forward_flat(self._afstft_handle[0],
+                                ffi.from_buffer("float *", in_frame_td),
+                                framesize,
+                                ffi.from_buffer("float_complex *", data_fd))
+        return data_fd
+
+
+    def backward_flat(self, in_frame_fd):
+        assert(in_frame_fd.ndim == 3)
+        in_data_fd = np.ascontiguousarray(in_frame_fd, dtype=np.complex64)
+
+        num_ch_out = in_data_fd.shape[1]
+        assert(num_ch_out == self._num_ch_out)
+        num_hops = in_data_fd.shape[2]
+        framesize = num_hops * self._hopsize
+
+        data_td = np.ones((num_ch_out, framesize), dtype=np.float32)
+
+        lib.afSTFT_backward_flat(self._afstft_handle[0],
+                                 ffi.from_buffer("float_complex *", in_frame_fd),
+                                 framesize,
+                                 ffi.from_buffer("float *", data_td))
+
+        return data_td

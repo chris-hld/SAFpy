@@ -10,21 +10,6 @@ saf_path = os.path.join(this_dir, '..', '..', 'Spatial_Audio_Framework')
 # globals needed to use the shared object. It must be in valid C syntax.
 ffibuilder.cdef("""
 
-void *malloc(size_t size);
-void free(void *ptr);
-
-/* 2-D */
-void** malloc2d(size_t dim1, size_t dim2, size_t data_size);
-void** calloc2d(size_t dim1, size_t dim2, size_t data_size);
-void** realloc2d(void** ptr, size_t dim1, size_t dim2, size_t data_size);
-//void free2d(void*** ptr);
-
-/* 3-D */
-void*** malloc3d(size_t dim1, size_t dim2, size_t dim3, size_t data_size);
-void*** calloc3d(size_t dim1, size_t dim2, size_t dim3, size_t data_size);
-void*** realloc3d(void*** ptr, size_t dim1, size_t dim2, size_t dim3, size_t data_size);
-//void free3d(void**** ptr);
-
 typedef float _Complex float_complex;
 typedef double _Complex double_complex;
 
@@ -33,6 +18,31 @@ typedef enum _AFSTFT_FDDATA_FORMAT{
     AFSTFT_TIME_CH_BANDS  /**< nTimeHops x nChannels x nBands */
 
 }AFSTFT_FDDATA_FORMAT;
+
+
+void *malloc(size_t size);
+void free(void *ptr);
+
+/**
+ * 2-D malloc (contiguously allocated, so use free() as usual to deallocate)
+ */
+void** malloc2d(size_t dim1, size_t dim2, size_t data_size);
+
+/**
+ * 2-D calloc (contiguously allocated, so use free() as usual to deallocate)
+ */
+void** calloc2d(size_t dim1, size_t dim2, size_t data_size);
+
+/**
+ * 3-D malloc (contiguously allocated, so use free() as usual to deallocate)
+ */
+void*** malloc3d(size_t dim1, size_t dim2, size_t dim3, size_t data_size);
+
+/**
+ * 3-D calloc (contiguously allocated, so use free() as usual to deallocate)
+ */
+void*** calloc3d(size_t dim1, size_t dim2, size_t dim3, size_t data_size);
+
 
 
 long double factorial(int n);
@@ -83,6 +93,8 @@ void afSTFT_getCentreFreqs(void * const hSTFT,
 
 int afSTFT_getProcDelay(void * const hSTFT);
 
+void afSTFT_clearBuffers(void * const hSTFT);
+
 void afSTFT_forward(void * const hSTFT,
                     float** dataTD,
                     int framesize,
@@ -92,6 +104,16 @@ void afSTFT_backward(void * const hSTFT,
                      float_complex*** dataFD,
                      int framesize,
                      float** dataTD);
+
+void afSTFT_forward_flat(void * const hSTFT,
+                         float* dataTD,
+                         int framesize,
+                         float_complex* dataFD);
+
+void afSTFT_backward_flat(void * const hSTFT,
+                          float_complex* dataFD,
+                          int framesize,
+                          float* dataTD);
 
 
 """)

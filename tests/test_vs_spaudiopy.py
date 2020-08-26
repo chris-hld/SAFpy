@@ -51,4 +51,23 @@ def test_vbap_gaintable_3d():
     assert(np.all(np.count_nonzero(gt, axis=1) <= 3))
     assert_allclose(np.sum(gt**2, axis=1), np.ones(gt.shape[0]), atol=10e-6)
 
-test_vbap_gaintable_3d()
+
+def test_afstft():
+    num_in = 2
+    num_out = 2
+    hopsize = 128
+
+    h = safpy.afstft.AfSTFT(num_in, num_out, hopsize, fs=48000)
+    in_sig = np.random.randn(num_in, 4096)
+
+    data_fd_f = h.forward(in_sig)
+    data_td_f = h.backward(data_fd_f)
+
+    h.clear_buffers()
+    data_fd = h.forward_slow(in_sig)
+    data_td = h.backward_slow(data_fd)
+
+    np.testing.assert_allclose(data_td, data_td_f)
+    np.testing.assert_allclose(in_sig[:, :-h.get_processing_delay()],
+                               data_td[:, h.get_processing_delay():],
+                               atol=10e-3)

@@ -149,7 +149,7 @@ class AfSTFT():
         num_bands = self._num_bands
 
         data_fd = np.ones((num_bands, num_ch_in, num_hops),
-                           dtype=np.complex64)
+                          dtype=np.complex64)
 
         lib.afSTFT_forward_flat(self._afstft_handle[0],
                                 ffi.from_buffer("float *", in_frame_td),
@@ -191,7 +191,7 @@ class AfSTFT():
         return data_td
 
     def forward_slow(self, in_frame_td):
-        """ Only for reference. """
+        """Only for reference."""
         in_frame_td = np.atleast_2d(in_frame_td)
         in_frame_td = np.ascontiguousarray(in_frame_td, dtype=np.float32)
 
@@ -223,14 +223,14 @@ class AfSTFT():
                                                  num_bands*num_ch_in*num_hops),
                                       dtype=np.complex64, ndmin=3),
                              (num_bands, num_ch_in, num_hops))
-                
+
         lib.free(data_td_ptr)
         lib.free(data_fd_ptr)
 
         return data_fd
 
     def backward_slow(self, in_data_fd):
-        """ Only for reference. """
+        """Only for reference."""
         in_data_fd = np.ascontiguousarray(in_data_fd, dtype=np.complex64)
 
         num_bands = self._num_bands
@@ -264,5 +264,5 @@ class AfSTFT():
 
         lib.free(data_td_ptr)
         lib.free(data_fd_ptr)
-        
+
         return data_td

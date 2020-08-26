@@ -31,6 +31,22 @@ def getSHreal(order, dirs_deg):
 
 
 def getSHcomplex(order, dirs_deg):
+    """
+    
+
+    Parameters
+    ----------
+    order : TYPE
+        DESCRIPTION.
+    dirs_deg : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    Y : TYPE
+        DESCRIPTION.
+
+    """
     order = int(order)
     dirs_deg = np.atleast_2d(dirs_deg)
     dirs_deg = np.ascontiguousarray(dirs_deg, dtype=np.float32)

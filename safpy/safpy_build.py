@@ -10,6 +10,8 @@ saf_path = os.path.join(this_dir, '..', '..', 'Spatial_Audio_Framework')
 # globals needed to use the shared object. It must be in valid C syntax.
 ffibuilder.cdef("""
 
+#define SAF_VERSION ...
+
 typedef float _Complex float_complex;
 typedef double _Complex double_complex;
 

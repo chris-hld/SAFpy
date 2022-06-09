@@ -2,8 +2,7 @@ import numpy as np
 import safpy
 
 
-safpy.wrapit.whoami()
-print(safpy.wrapit.factorial(3))
+safpy.utils.whoami()
 print(safpy.sh.getSHreal(1, [0, 0]))
 print(safpy.sh.getSHcomplex(1, [0, 0]))
 print(safpy.vbap.generateVBAPgainTable3D(np.reshape(np.arange(10), (5, 2)),

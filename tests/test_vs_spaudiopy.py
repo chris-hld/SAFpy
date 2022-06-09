@@ -16,6 +16,10 @@ import spaudiopy as spa
 import safpy
 
 
+def test_whoami():
+    safpy.utils.whoami()
+
+
 def test_getSHreal():
     num_dirs = 3
     rg = np.random.default_rng()

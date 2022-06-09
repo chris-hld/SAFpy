@@ -22,6 +22,10 @@ Test
 ---
 `pytest -vvv`
 
+Install
+---
+`pip install -e . `
+
 Usage
 ---
 We can now use *safpy* as a python module.

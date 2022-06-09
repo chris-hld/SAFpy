@@ -1,8 +1,9 @@
 # SAFpy
-WIP
 
 This is a Python interface / wrapper for
 https://github.com/leomccormack/Spatial_Audio_Framework
+
+So far, there is a bunch of functions exposed, please feel free to add/contribute more if needed!
 
 
 Prerequisites

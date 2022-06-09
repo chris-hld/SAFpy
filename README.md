@@ -14,6 +14,8 @@ Now we need to build *safpy*, which creates the module with
 
 `python safpy/safpy_build.py`
 
+By default, it assumes SAF in a folder parallel to safpy. You can simply adapt
+the variable `saf_path` if needed.
 
 Test
 ---

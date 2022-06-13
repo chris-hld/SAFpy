@@ -47,7 +47,7 @@ def test_afstft():
                                atol=10e-3)
 
 
-def test_afstft_slow():
+def test_afstft_nd():
     num_in = 2
     num_out = 2
     hopsize = 128
@@ -55,8 +55,8 @@ def test_afstft_slow():
     h = safpy.afstft.AfSTFT(num_in, num_out, hopsize, fs=48000)
     in_sig = np.random.randn(num_in, 1000*4096)
 
-    data_fd = h.forward_slow(in_sig)
-    data_td = h.backward_slow(data_fd)
+    data_fd = h.forward_nd(in_sig)
+    data_td = h.backward_nd(data_fd)
 
     np.testing.assert_allclose(in_sig[:, :-h.get_processing_delay()],
                                data_td[:, h.get_processing_delay():],
@@ -74,8 +74,8 @@ def test_afstft_compare():
     data_td_f = h.backward(data_fd_f)
 
     h.clear_buffers()
-    data_fd_s = h.forward_slow(in_sig)
-    data_td_s = h.backward_slow(data_fd_s)
+    data_fd_s = h.forward_nd(in_sig)
+    data_td_s = h.backward_nd(data_fd_s)
 
     np.testing.assert_allclose(data_td_s, data_td_f)
     np.testing.assert_allclose(in_sig[:, :-h.get_processing_delay()],

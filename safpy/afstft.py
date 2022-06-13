@@ -137,7 +137,7 @@ class AfSTFT():
             Transformed signals.
 
         """
-        in_frame_td = np.atleast_2d(in_frame_td)
+        assert(in_frame_td.ndim == 2)
         in_frame_td = np.ascontiguousarray(in_frame_td, dtype=np.float32)
 
         num_ch_in = in_frame_td.shape[0]
@@ -145,7 +145,6 @@ class AfSTFT():
         framesize = in_frame_td.shape[1]
         assert(framesize % self._hopsize == 0)
         num_hops = framesize // self._hopsize
-
         num_bands = self._num_bands
 
         data_fd = np.ones((num_bands, num_ch_in, num_hops),
@@ -173,11 +172,11 @@ class AfSTFT():
 
         """
         assert(in_frame_fd.ndim == 3)
-        in_data_fd = np.ascontiguousarray(in_frame_fd, dtype=np.complex64)
+        in_frame_fd = np.ascontiguousarray(in_frame_fd, dtype=np.complex64)
 
-        num_ch_out = in_data_fd.shape[1]
+        num_ch_out = in_frame_fd.shape[1]
         assert(num_ch_out == self._num_ch_out)
-        num_hops = in_data_fd.shape[2]
+        num_hops = in_frame_fd.shape[2]
         framesize = num_hops * self._hopsize
 
         data_td = np.ones((num_ch_out, framesize), dtype=np.float32)
@@ -190,9 +189,9 @@ class AfSTFT():
 
         return data_td
 
-    def forward_slow(self, in_frame_td):
-        """Only for reference."""
-        in_frame_td = np.atleast_2d(in_frame_td)
+    def forward_nd(self, in_frame_td):
+        """Only for reference, using nd-arrays."""
+        assert(in_frame_td.ndim == 2)
         in_frame_td = np.ascontiguousarray(in_frame_td, dtype=np.float32)
 
         num_ch_in = in_frame_td.shape[0]
@@ -200,7 +199,6 @@ class AfSTFT():
         framesize = in_frame_td.shape[1]
         assert(framesize % self._hopsize == 0)
         num_hops = framesize // self._hopsize
-
         num_bands = self._num_bands
 
         # populate
@@ -223,15 +221,16 @@ class AfSTFT():
         #ffi.release(data_td_ptr)  # managed
         return data_fd
 
-    def backward_slow(self, in_data_fd):
-        """Only for reference."""
-        in_data_fd = np.ascontiguousarray(in_data_fd, dtype=np.complex64)
+    def backward_nd(self, in_frame_fd):
+        """Only for reference, using nd-arrays."""
+        assert(in_frame_fd.ndim == 3)
+        in_frame_fd = np.ascontiguousarray(in_frame_fd, dtype=np.complex64)
 
-        num_bands = self._num_bands
-        num_ch_out = in_data_fd.shape[1]
+        num_ch_out = in_frame_fd.shape[1]
         assert(num_ch_out == self._num_ch_out)
-        num_hops = in_data_fd.shape[2]
+        num_hops = in_frame_fd.shape[2]
         framesize = num_hops * self._hopsize
+        num_bands = self._num_bands
 
         # populate
         data_fd_ptr = ffi.cast("float_complex ***",
@@ -241,7 +240,7 @@ class AfSTFT():
             for idx_ch in range(num_ch_out):
                 data_fd_ptr[idx_band][idx_ch] = \
                     ffi.from_buffer("float_complex *",
-                                    in_data_fd[idx_band, idx_ch, :])
+                                    in_frame_fd[idx_band, idx_ch, :])
 
         data_td_ptr = ffi.cast("float **", lib.malloc2d(num_ch_out, framesize,
                                                         ffi.sizeof("float")))

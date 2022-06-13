@@ -124,17 +124,17 @@ class AfSTFT():
 
     def forward(self, in_frame_td):
         """
-        
+        Forward afSTFT.
 
         Parameters
         ----------
-        in_frame_td : TYPE
-            DESCRIPTION.
+        in_frame_td : ndarray [num_ch, framesize]
+            Time domain signals.
 
         Returns
         -------
-        data_fd : TYPE
-            DESCRIPTION.
+        data_fd : ndarray [num_bands, num_ch_in, num_hops]
+            Transformed signals.
 
         """
         in_frame_td = np.atleast_2d(in_frame_td)
@@ -159,17 +159,17 @@ class AfSTFT():
 
     def backward(self, in_frame_fd):
         """
-        
+        Backward afSTFT.
 
         Parameters
         ----------
-        in_frame_fd : TYPE
-            DESCRIPTION.
+        in_frame_fd : ndarray [num_bands, num_ch_in, num_hops]
+            Transformed signals.
 
         Returns
         -------
-        data_td : TYPE
-            DESCRIPTION.
+        data_td : ndarray [num_ch, framesize]
+            Time domain signals.
 
         """
         assert(in_frame_fd.ndim == 3)

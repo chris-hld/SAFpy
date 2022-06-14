@@ -42,8 +42,8 @@ def test_afstft():
     data_fd = h.forward(in_sig)
     data_td = h.backward(data_fd)
 
-    np.testing.assert_allclose(in_sig[:, :-h.get_processing_delay()],
-                               data_td[:, h.get_processing_delay():],
+    np.testing.assert_allclose(in_sig[:, :-h.processing_delay],
+                               data_td[:, h.processing_delay:],
                                atol=10e-3)
 
 
@@ -58,8 +58,8 @@ def test_afstft_nd():
     data_fd = h.forward_nd(in_sig)
     data_td = h.backward_nd(data_fd)
 
-    np.testing.assert_allclose(in_sig[:, :-h.get_processing_delay()],
-                               data_td[:, h.get_processing_delay():],
+    np.testing.assert_allclose(in_sig[:, :-h.processing_delay],
+                               data_td[:, h.processing_delay:],
                                atol=10e-3)
 
 def test_afstft_compare():
@@ -78,6 +78,6 @@ def test_afstft_compare():
     data_td_s = h.backward_nd(data_fd_s)
 
     np.testing.assert_allclose(data_td_s, data_td_f)
-    np.testing.assert_allclose(in_sig[:, :-h.get_processing_delay()],
-                               data_td_s[:, h.get_processing_delay():],
+    np.testing.assert_allclose(in_sig[:, :-h.processing_delay],
+                               data_td_s[:, h.processing_delay:],
                                atol=10e-3)

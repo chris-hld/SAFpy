@@ -36,23 +36,25 @@ class AfSTFT():
         # let the compiler fill in the rest...
 
         afstft_handle = ffi.new("void **")
+        self._afstft_handle = afstft_handle  # keep alive
 
         lib.afSTFT_create(afstft_handle,
                           num_ch_in, num_ch_out, hopsize,
                           LOWDELAYMODE, HYBRIDMODE, afstft_format)
-        self._afstft_handle = afstft_handle  # keep alive
         print(f"Created AFSTFT instance at {self._afstft_handle[0]}")
 
         # flush
         self.clear_buffers()
 
-        self._num_bands = self.get_num_bands()
-        self._center_freqs = self.get_center_freqs(fs)
-        self._processing_delay = self.get_processing_delay()
+        self._fs = fs
+        self._hopsize = hopsize
+
+        self._num_bands = None
+        self._center_freqs = None
+        self._processing_delay = None
 
         self._num_ch_in = num_ch_in
         self._num_ch_out = num_ch_out
-        self._hopsize = hopsize
 
     def __del__(self):
         """
@@ -66,7 +68,16 @@ class AfSTFT():
         print(f"Destroying AFSTFT instance at {self._afstft_handle[0]}")
         lib.afSTFT_destroy(self._afstft_handle)
 
-    def get_num_bands(self):
+    @property
+    def fs(self):
+        return self._fs
+
+    @property
+    def hopsize(self):
+        return self._hopsize
+
+    @property
+    def num_bands(self):
         """
         Return number of frequency bands.
 
@@ -76,16 +87,14 @@ class AfSTFT():
             Number of frequency bands.
 
         """
-        return lib.afSTFT_getNBands(self._afstft_handle[0])
+        if self._num_bands is None:
+            self._num_bands = lib.afSTFT_getNBands(self._afstft_handle[0])
+        return self._num_bands
 
-    def get_center_freqs(self, fs):
+    @property
+    def center_freqs(self):
         """
-        Calculate center frequencies of filterbank.
-
-        Parameters
-        ----------
-        fs : float
-            DESCRIPTION.
+        Return center frequencies of filterbank.
 
         Returns
         -------
@@ -93,13 +102,16 @@ class AfSTFT():
             DESCRIPTION.
 
         """
-        num_bands = self._num_bands
-        freqs = np.zeros(num_bands, dtype=np.float32)
-        lib.afSTFT_getCentreFreqs(self._afstft_handle[0], fs, num_bands,
-                                  ffi.from_buffer("float []", freqs))
-        return freqs
+        if self._center_freqs is None:
+            freqs = np.zeros(self.num_bands, dtype=np.float32)
+            lib.afSTFT_getCentreFreqs(self._afstft_handle[0], self.fs, 
+                                      self.num_bands, 
+                                      ffi.from_buffer("float []", freqs))
+            self._center_freqs = freqs
+        return self._center_freqs
 
-    def get_processing_delay(self):
+    @property
+    def processing_delay(self):
         """
         Return current processing delay, in samples.
 
@@ -109,16 +121,14 @@ class AfSTFT():
             DESCRIPTION.
 
         """
-        return lib.afSTFT_getProcDelay(self._afstft_handle[0])
+        if self._processing_delay is None:
+            self._processing_delay = lib.afSTFT_getProcDelay(
+                                        self._afstft_handle[0])
+        return self._processing_delay
 
     def clear_buffers(self):
         """
         Flushes time-domain buffers with zeros.
-
-        Returns
-        -------
-        None.
-
         """
         lib.afSTFT_clearBuffers(self._afstft_handle[0])
 
@@ -143,9 +153,9 @@ class AfSTFT():
         num_ch_in = in_frame_td.shape[0]
         assert(num_ch_in == self._num_ch_in)
         framesize = in_frame_td.shape[1]
-        assert(framesize % self._hopsize == 0)
-        num_hops = framesize // self._hopsize
-        num_bands = self._num_bands
+        assert(framesize % self.hopsize == 0)
+        num_hops = framesize // self.hopsize
+        num_bands = self.num_bands
 
         data_fd = np.ones((num_bands, num_ch_in, num_hops),
                           dtype=np.complex64)
@@ -177,7 +187,7 @@ class AfSTFT():
         num_ch_out = in_frame_fd.shape[1]
         assert(num_ch_out == self._num_ch_out)
         num_hops = in_frame_fd.shape[2]
-        framesize = num_hops * self._hopsize
+        framesize = num_hops * self.hopsize
 
         data_td = np.ones((num_ch_out, framesize), dtype=np.float32)
 
@@ -197,9 +207,9 @@ class AfSTFT():
         num_ch_in = in_frame_td.shape[0]
         assert(num_ch_in == self._num_ch_in)
         framesize = in_frame_td.shape[1]
-        assert(framesize % self._hopsize == 0)
-        num_hops = framesize // self._hopsize
-        num_bands = self._num_bands
+        assert(framesize % self.hopsize == 0)
+        num_hops = framesize // self.hopsize
+        num_bands = self.num_bands
 
         # populate
         data_td_ptr = ffi.new("float *[]", num_ch_in)
@@ -229,8 +239,8 @@ class AfSTFT():
         num_ch_out = in_frame_fd.shape[1]
         assert(num_ch_out == self._num_ch_out)
         num_hops = in_frame_fd.shape[2]
-        framesize = num_hops * self._hopsize
-        num_bands = self._num_bands
+        framesize = num_hops * self.hopsize
+        num_bands = self.num_bands
 
         # populate
         data_fd_ptr = ffi.cast("float_complex ***",

@@ -35,13 +35,13 @@ class AfSTFT():
         afstft_format = 0  # < nBands x nChannels x nTimeHops
         # let the compiler fill in the rest...
 
-        afstft_handle = ffi.new("void **")
-        self._afstft_handle = afstft_handle  # keep alive
+        afstft_phandle = ffi.new("void **")
+        self._afstft_phandle = afstft_phandle  # keep alive
 
-        lib.afSTFT_create(afstft_handle,
+        lib.afSTFT_create(afstft_phandle,
                           num_ch_in, num_ch_out, hopsize,
                           LOWDELAYMODE, HYBRIDMODE, afstft_format)
-        print(f"Created AFSTFT instance at {self._afstft_handle[0]}")
+        print(f"Created AFSTFT instance at {self._afstft_phandle[0]}")
 
         # flush
         self.clear_buffers()
@@ -65,8 +65,8 @@ class AfSTFT():
         None.
 
         """
-        print(f"Destroying AFSTFT instance at {self._afstft_handle[0]}")
-        lib.afSTFT_destroy(self._afstft_handle)
+        print(f"Destroying AFSTFT instance at {self._afstft_phandle[0]}")
+        lib.afSTFT_destroy(self._afstft_phandle)
 
     @property
     def fs(self):
@@ -88,7 +88,7 @@ class AfSTFT():
 
         """
         if self._num_bands is None:
-            self._num_bands = lib.afSTFT_getNBands(self._afstft_handle[0])
+            self._num_bands = lib.afSTFT_getNBands(self._afstft_phandle[0])
         return self._num_bands
 
     @property
@@ -104,8 +104,8 @@ class AfSTFT():
         """
         if self._center_freqs is None:
             freqs = np.zeros(self.num_bands, dtype=np.float32)
-            lib.afSTFT_getCentreFreqs(self._afstft_handle[0], self.fs, 
-                                      self.num_bands, 
+            lib.afSTFT_getCentreFreqs(self._afstft_phandle[0], self.fs,
+                                      self.num_bands,
                                       ffi.from_buffer("float []", freqs))
             self._center_freqs = freqs
         return self._center_freqs
@@ -123,14 +123,14 @@ class AfSTFT():
         """
         if self._processing_delay is None:
             self._processing_delay = lib.afSTFT_getProcDelay(
-                                        self._afstft_handle[0])
+                                        self._afstft_phandle[0])
         return self._processing_delay
 
     def clear_buffers(self):
         """
         Flushes time-domain buffers with zeros.
         """
-        lib.afSTFT_clearBuffers(self._afstft_handle[0])
+        lib.afSTFT_clearBuffers(self._afstft_phandle[0])
 
     def forward(self, in_frame_td):
         """
@@ -160,7 +160,7 @@ class AfSTFT():
         data_fd = np.ones((num_bands, num_ch_in, num_hops),
                           dtype=np.complex64)
 
-        lib.afSTFT_forward_flat(self._afstft_handle[0],
+        lib.afSTFT_forward_flat(self._afstft_phandle[0],
                                 ffi.from_buffer("float *", in_frame_td),
                                 framesize,
                                 ffi.from_buffer("float_complex *", data_fd))
@@ -184,6 +184,7 @@ class AfSTFT():
         assert(in_frame_fd.ndim == 3)
         in_frame_fd = np.ascontiguousarray(in_frame_fd, dtype=np.complex64)
 
+        assert(in_frame_fd.shape[0] == self.num_bands)
         num_ch_out = in_frame_fd.shape[1]
         assert(num_ch_out == self._num_ch_out)
         num_hops = in_frame_fd.shape[2]
@@ -191,7 +192,7 @@ class AfSTFT():
 
         data_td = np.ones((num_ch_out, framesize), dtype=np.float32)
 
-        lib.afSTFT_backward_flat(self._afstft_handle[0],
+        lib.afSTFT_backward_flat(self._afstft_phandle[0],
                                  ffi.from_buffer("float_complex *",
                                                  in_frame_fd),
                                  framesize,
@@ -220,15 +221,17 @@ class AfSTFT():
         data_fd_ptr = ffi.cast("float_complex ***",
                                lib.malloc3d(num_bands, num_ch_in, num_hops,
                                             ffi.sizeof("float_complex")))
-        lib.afSTFT_forward(self._afstft_handle[0], data_td_ptr, framesize,
+        lib.afSTFT_forward(self._afstft_phandle[0], data_td_ptr, framesize,
                            data_fd_ptr)
 
         # unpack
         data_fd = np.reshape(np.frombuffer(ffi.buffer(data_fd_ptr[0][0],
-                    num_bands*num_ch_in*num_hops*ffi.sizeof("float_complex")),
-                    dtype=np.complex64), (num_bands, num_ch_in, num_hops))
+                                           num_bands*num_ch_in*num_hops *
+                                           ffi.sizeof("float_complex")),
+                                           dtype=np.complex64),
+                             (num_bands, num_ch_in, num_hops))
 
-        #ffi.release(data_td_ptr)  # managed
+        # ffi.release(data_td_ptr)  # managed
         return data_fd
 
     def backward_nd(self, in_frame_fd):
@@ -254,13 +257,15 @@ class AfSTFT():
 
         data_td_ptr = ffi.cast("float **", lib.malloc2d(num_ch_out, framesize,
                                                         ffi.sizeof("float")))
-        lib.afSTFT_backward(self._afstft_handle[0], data_fd_ptr , framesize,
+        lib.afSTFT_backward(self._afstft_phandle[0], data_fd_ptr, framesize,
                             data_td_ptr)
 
         # unpack
         data_td = np.reshape(np.frombuffer(ffi.buffer(data_td_ptr[0],
-                             num_ch_out*framesize*ffi.sizeof("float")),
-                             dtype=np.float32), (num_ch_out, framesize))
+                                           num_ch_out*framesize *
+                                           ffi.sizeof("float")),
+                                           dtype=np.float32),
+                             (num_ch_out, framesize))
 
         lib.free(data_fd_ptr)
 

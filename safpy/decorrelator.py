@@ -6,8 +6,9 @@ from ._safpy import ffi, lib
 class LatticeDecorrelator():
     """."""
 
-    def __init__(self, fs, hopsize, freq_vec, num_ch, orders,
-                 freq_cutoffs, max_delay, lookup_offset=0, en_comp=0.75):
+    def __init__(self, fs, hopsize, freq_vec, num_ch, orders=[20, 15, 6, 3],
+                 freq_cutoffs=[0.6e3, 2.4e3, 4e3, 12e3], max_delay=8,
+                 lookup_offset=0, en_comp=0.75):
 
         decorrelator_phandle = ffi.new("void **")
         self._decorrelator_phandle = decorrelator_phandle  # keep alive
@@ -90,15 +91,15 @@ class LatticeDecorrelator():
 
     def apply(self, in_frame_fd):
         """
-        Apply decorreltation.
+        Apply decorrelation.
 
         Parameters
         ----------
-        in_frame_fd : ndarray [num_bands, num_ch_in, num_hops]
+        in_frame_fd : ndarray [num_bands, num_ch_in, num_t_slots]
 
         Returns
         -------
-        out_frame_fd : ndarray [num_bands, num_ch_in, num_hops]
+        out_frame_fd : ndarray [num_bands, num_ch_in, num_t_slots]
 
         """
         assert(in_frame_fd.ndim == 3)
@@ -108,7 +109,7 @@ class LatticeDecorrelator():
         assert(num_bands == self.num_bands)
         num_ch = in_frame_fd.shape[1]
         assert(num_ch == self.num_ch)
-        num_hops = in_frame_fd.shape[2]
+        num_t_slots = in_frame_fd.shape[2]
 
         # populate
         data_in_ptr = ffi.cast("float_complex ***",
@@ -121,17 +122,17 @@ class LatticeDecorrelator():
                                     in_frame_fd[idx_band, idx_ch, :])
 
         data_out_ptr = ffi.cast("float_complex ***",
-                                lib.malloc3d(num_bands, num_ch, num_hops,
+                                lib.malloc3d(num_bands, num_ch, num_t_slots,
                                              ffi.sizeof("float_complex *")))
         lib.latticeDecorrelator_apply(self._decorrelator_phandle[0],
-                                      data_in_ptr, num_hops, data_out_ptr)
+                                      data_in_ptr, num_t_slots, data_out_ptr)
 
         # unpack
         data_out = np.reshape(np.frombuffer(ffi.buffer(data_out_ptr[0][0],
-                                            num_bands*num_ch*num_hops *
+                                            num_bands*num_ch*num_t_slots *
                                             ffi.sizeof("float_complex")),
                                             dtype=np.complex64),
-                              (num_bands, num_ch, num_hops))
+                              (num_bands, num_ch, num_t_slots))
 
         lib.free(data_in_ptr)
         return data_out

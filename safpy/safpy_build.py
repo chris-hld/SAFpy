@@ -118,6 +118,27 @@ void afSTFT_backward_flat(void * const hSTFT,
                           int framesize,
                           float* dataTD);
 
+void latticeDecorrelator_create(void ** phDecor,
+                                float fs,
+                                int hopsize,
+                                float * freqVector,
+                                int nBands,
+                                int nCH,
+                                int * orders,
+                                float * freqCutoffs,
+                                int nCutoffs,
+                                int maxDelay,
+                                int lookupOffset,
+                                float enComp_coeff);
+
+void latticeDecorrelator_destroy(void ** phDecor);
+
+void latticeDecorrelator_reset(void * hDecor);
+
+void latticeDecorrelator_apply(void * hDecor,
+                               float_complex *** inFrame,
+                               int nTimeSlots, 
+                               float_complex *** decorFrame);
 
 """)
 

@@ -9,7 +9,35 @@ class LatticeDecorrelator():
     def __init__(self, fs, hopsize, freq_vec, num_ch, orders=[20, 15, 6, 3],
                  freq_cutoffs=[0.6e3, 2.4e3, 4e3, 12e3], max_delay=8,
                  lookup_offset=0, en_comp=0.75):
+        """
+        Call Constructor.
 
+        Parameters
+        ----------
+        fs : TYPE
+            DESCRIPTION.
+        hopsize : TYPE
+            DESCRIPTION.
+        freq_vec : TYPE
+            DESCRIPTION.
+        num_ch : TYPE
+            DESCRIPTION.
+        orders : TYPE, optional
+            DESCRIPTION. The default is [20, 15, 6, 3].
+        freq_cutoffs : TYPE, optional
+            DESCRIPTION. The default is [0.6e3, 2.4e3, 4e3, 12e3].
+        max_delay : TYPE, optional
+            DESCRIPTION. The default is 8.
+        lookup_offset : TYPE, optional
+            DESCRIPTION. The default is 0.
+        en_comp : TYPE, optional
+            DESCRIPTION. The default is 0.75.
+
+        Returns
+        -------
+        None.
+
+        """
         decorrelator_phandle = ffi.new("void **")
         self._decorrelator_phandle = decorrelator_phandle  # keep alive
 
@@ -65,11 +93,11 @@ class LatticeDecorrelator():
     @property
     def num_ch(self):
         return self._num_ch
-    
+
     @property
     def num_bands(self):
         return self._num_bands
-    
+
     @property
     def center_freqs(self):
         return self._center_freqs
@@ -140,17 +168,32 @@ class LatticeDecorrelator():
 
 class TransientDucker():
     """."""
+
     def __init__(self, num_ch, num_bands):
-        
+        """
+        Call Constructor.
+
+        Parameters
+        ----------
+        num_ch : TYPE
+            DESCRIPTION.
+        num_bands : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         ducker_phandle = ffi.new("void **")
         self._ducker_phandle = ducker_phandle  # keep alive
-        
+
         lib.transientDucker_create(ducker_phandle, num_ch, num_bands)
         print(f"Created instance at {self._ducker_phandle[0]}")
 
         self._num_ch = num_ch
         self._num_bands = num_bands
-        
+
     def __del__(self):
         """
         Call Destructor.
@@ -166,11 +209,11 @@ class TransientDucker():
     @property
     def num_ch(self):
         return self._num_ch
-    
+
     @property
     def num_bands(self):
         return self._num_bands
-        
+
     def apply(self, in_frame_fd, alpha=0.95, beta=0.995):
         """
         Apply transient ducker.
@@ -185,7 +228,6 @@ class TransientDucker():
         trs_frame_fd : ndarray [num_bands, num_ch_in, num_t_slots]
 
         """
-
         assert(in_frame_fd.ndim == 3)
         in_frame_fd = np.ascontiguousarray(in_frame_fd, dtype=np.complex64)
 

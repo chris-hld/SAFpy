@@ -137,8 +137,21 @@ void latticeDecorrelator_reset(void * hDecor);
 
 void latticeDecorrelator_apply(void * hDecor,
                                float_complex *** inFrame,
-                               int nTimeSlots, 
+                               int nTimeSlots,
                                float_complex *** decorFrame);
+void transientDucker_create(void ** 	phDucker,
+                            int 	nCH,
+                            int 	nBands);
+
+void transientDucker_destroy(void ** phDucker);
+
+void transientDucker_apply(void * hDucker,
+                           float_complex *** inFrame,
+                           int nTimeSlots,
+                           float alpha,
+                           float beta,
+                           float_complex *** residualFrame,
+                           float_complex *** transientFrame);
 
 """)
 

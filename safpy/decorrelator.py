@@ -189,7 +189,8 @@ class TransientDucker():
         self._ducker_phandle = ducker_phandle  # keep alive
 
         lib.transientDucker_create(ducker_phandle, num_ch, num_bands)
-        print(f"Created instance at {self._ducker_phandle[0]}")
+        print("Created transient ducker instance at "
+              f"{self._ducker_phandle[0]}")
 
         self._num_ch = num_ch
         self._num_bands = num_bands
@@ -203,7 +204,8 @@ class TransientDucker():
         None.
 
         """
-        print(f"Destroying instance at {self._ducker_phandle[0]}")
+        print("Destroying transient ducker instance at "
+              f"{self._ducker_phandle[0]}")
         lib.transientDucker_destroy(self._ducker_phandle)
 
     @property

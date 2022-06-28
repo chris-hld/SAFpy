@@ -1,6 +1,6 @@
 # SAFpy
 
-This is a Python interface / wrapper for
+This is a Python binding / wrapper for
 https://github.com/leomccormack/Spatial_Audio_Framework
 
 So far, there is a bunch of functions exposed, please feel free to add/contribute more if needed!
@@ -29,4 +29,4 @@ Install
 Usage
 ---
 We can now use *safpy* as a python module.
-Have a look at test_call.py!
+Have a look at `examples/test_call.py`!

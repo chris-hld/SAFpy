@@ -3,7 +3,7 @@ import sys
 
 import numpy as np
 
-from ._safpy import ffi, lib
+from _safpy import ffi, lib
 
 
 def whoami():

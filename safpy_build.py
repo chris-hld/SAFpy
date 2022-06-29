@@ -5,7 +5,7 @@ ffibuilder = FFI()
 home_dir = os.path.expanduser('~')
 this_dir = os.path.abspath(os.path.dirname(__file__))
 # define saf_path here, assumes SAF parallel to safpy by default.
-saf_path = os.path.join(this_dir, '..', '..', 'Spatial_Audio_Framework')
+saf_path = os.path.join(this_dir, '..', 'Spatial_Audio_Framework')
 
 # cdef() expects a single string declaring the C types, functions and
 # globals needed to use the shared object. It must be in valid C syntax.
@@ -182,4 +182,4 @@ ffibuilder.set_source("_safpy", c_header_source, include_dirs=include_dirs,
                       libraries=libraries, library_dirs=library_dirs)
 
 if __name__ == "__main__":
-    ffibuilder.compile(tmpdir=this_dir, verbose=True)
+    ffibuilder.compile(verbose=True)

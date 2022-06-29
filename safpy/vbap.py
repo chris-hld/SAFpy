@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from ._safpy import ffi, lib
+from _safpy import ffi, lib
 
 
 def generateVBAPgainTable3D(ls_dirs_deg, az_res_deg, el_res_deg,

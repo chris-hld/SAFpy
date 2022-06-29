@@ -22,7 +22,7 @@ setuptools.setup(
     ],
     packages=setuptools.find_packages(),
     python_requires=">=3.6",
-    install_requires=[
-                'numpy',
-                'cffi'],
+    setup_requires=["cffi>=1.0.0"],
+    cffi_modules=["safpy_build.py:ffibuilder"],
+    install_requires=["cffi>=1.0.0","numpy"],
 )

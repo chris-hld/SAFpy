@@ -12,7 +12,7 @@ import pytest
 # import sys
 # sys.path.append("../")   # this adds the mother folder
 
-import spaudiopy as spa
+import numpy as np
 import safpy
 
 
@@ -21,10 +21,8 @@ def test_whoami():
 
 
 def test_vbap_gaintable_3d():
-    vecs = spa.grids.load_t_design(10)
-    azi, zen, r = spa.utils.cart2sph(*vecs.T)
-    azi_deg = spa.utils.rad2deg(azi)
-    zen_deg = spa.utils.rad2deg(zen)
+    azi_deg = np.random.uniform(0, 360, 100)
+    zen_deg = np.random.uniform(0, 180, 100)
     gt = safpy.vbap.generateVBAPgainTable3D(np.c_[azi_deg, zen_deg-90], 1, 1)
 
     assert(np.all(np.count_nonzero(gt, axis=1) <= 3))

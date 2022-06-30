@@ -11,13 +11,14 @@ Prerequisites
 ---
 1. Compile SAF, see instructions in its docs
 2. Install numpy and CFFI, e.g. `conda install numpy cffi`
+3. Now we need to build *safpy*, which creates the module. 
+Running `pip install -e .` builds it automatically
 
-Now we need to build *safpy*, which creates the module. 
-Running `pip install -e .` builds it automatically, you can run it manually 
-(e.g. for debugging with `python safpy_build.py`)
+(you can also build manually, e.g., for debugging, with 
+`python safpy_build.py`)
 
 By default, it assumes SAF in a folder parallel to safpy. You can simply adapt
-the variable `saf_path` if needed.
+the variable `saf_path` in `safpy_build.py` if needed.
 
 Install
 ---
@@ -29,5 +30,5 @@ Test
 
 Usage
 ---
-We can now use *safpy* as a python module.
+Use *safpy* as a python package.
 Have a look at `examples/test_call.py`!

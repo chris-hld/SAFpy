@@ -14,12 +14,6 @@ import sounddevice
 import matplotlib.pyplot as plt
 
 
-safpy.utils.whoami()
-Y_real = safpy.sh.getSHreal(1, [0, 0])
-Y_cpx = safpy.sh.getSHcomplex(1, [0, 0])
-vbap_gt = safpy.vbap.generateVBAPgainTable3D(np.reshape(np.arange(10), (5, 2)),
-                                             1, 1, 0, 0, 0)
-
 in_sig, fs = soundfile.read(Path("../data/music_snares.wav"), always_2d=1)
 in_sig = in_sig.T
 num_ch = in_sig.shape[0]

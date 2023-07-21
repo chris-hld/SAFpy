@@ -27,9 +27,11 @@ def test_getSHreal():
     zen = rg.uniform(0, np.pi, num_dirs)
     n_sph = 10
     a = safpy.sh.getSHreal(n_sph, np.c_[azi, zen])
-    b = spa.sph.sh_matrix(n_sph, azi, zen, SH_type='real').astype(np.float32)
+    b = safpy.sh.getSHreal_recur(n_sph, np.c_[azi, zen])
+    c = spa.sph.sh_matrix(n_sph, azi, zen, sh_type='real').astype(np.float32)
 
-    assert_allclose(a, b.T, atol=10e-6)
+    assert_allclose(a, c.T, atol=10e-6)
+    assert_allclose(b, c.T, atol=10e-6)
 
 
 def test_getSHcomplex():
@@ -39,7 +41,7 @@ def test_getSHcomplex():
     zen = rg.uniform(0, np.pi, num_dirs)
     n_sph = 10
     a = safpy.sh.getSHcomplex(n_sph, np.c_[azi, zen])
-    b = spa.sph.sh_matrix(n_sph, azi, zen, SH_type='complex').astype(
+    b = spa.sph.sh_matrix(n_sph, azi, zen, sh_type='complex').astype(
                           np.complex64)
 
     assert_allclose(a, b.T, atol=10e-6)

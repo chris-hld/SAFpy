@@ -64,6 +64,14 @@ void getSHreal_recur(/* Input Arguments */
             /* Output Arguments */
             float* Y);
 
+void getSHreal_part
+(
+    int order_start,
+    int order_end,
+    float* dirs_rad,
+    int nDirs,
+    float* Y);
+
 void getSHcomplex(/* Input Arguments */
                     int order,
                     float* dirs_rad,

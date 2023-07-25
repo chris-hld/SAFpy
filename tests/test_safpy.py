@@ -60,6 +60,7 @@ def test_afstft_nd():
                                data_td[:, h.processing_delay:],
                                atol=10e-3)
 
+
 def test_afstft_compare():
     num_in = 2
     num_out = 2
@@ -79,3 +80,18 @@ def test_afstft_compare():
     np.testing.assert_allclose(in_sig[:, :-h.processing_delay],
                                data_td_s[:, h.processing_delay:],
                                atol=10e-3)
+
+
+def test_getSH_variants():
+    num_dirs = 3
+    rg = np.random.default_rng()
+    azi = rg.uniform(0, 2*np.pi, num_dirs)
+    zen = rg.uniform(0, np.pi, num_dirs)
+    N_sph = 5
+    a = safpy.sh.getSHreal(N_sph, np.c_[azi, zen])
+    b = safpy.sh.getSHreal_recur(N_sph, np.c_[azi, zen])
+    c0 = safpy.sh.getSHreal_part(0, N_sph, np.c_[azi, zen])
+    c1 = safpy.sh.getSHreal_part(1, N_sph, np.c_[azi, zen])
+    assert_allclose(a, b, atol=10e-6)
+    assert_allclose(a, c0, atol=10e-6)
+    assert_allclose(a[1:, :], c1[1:, :], atol=10e-6)

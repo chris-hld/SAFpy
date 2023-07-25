@@ -57,6 +57,34 @@ def getSHreal_recur(order, dirs):
     return Y
 
 
+def getSHreal_part(order_start, order_end, dirs):
+    """
+    
+
+    Parameters
+    ----------
+    order : TYPE
+        DESCRIPTION.
+    dirs : TYPE
+        dirs in rad, azi, zen.
+
+    Returns
+    -------
+    Y : TYPE
+        ((order+1)**2, nDirs).
+
+    """
+    order_start = int(order_start)
+    order_end = int(order_end)
+    dirs = np.atleast_2d(dirs)
+    dirs = np.ascontiguousarray(dirs, dtype=np.float32)
+    nDirs = np.shape(dirs)[0]
+    Y = np.zeros(((order_end+1)**2, nDirs), dtype=np.float32)
+    lib.getSHreal_part(order_start, order_end, ffi.from_buffer("float *", dirs),
+                       nDirs, ffi.from_buffer("float *", Y))
+    return Y
+
+
 def getSHcomplex(order, dirs):
     """
     

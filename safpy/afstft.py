@@ -157,8 +157,8 @@ class AfSTFT():
         num_hops = framesize // self.hopsize
         num_bands = self.num_bands
 
-        data_fd = np.ones((num_bands, num_ch_in, num_hops),
-                          dtype=np.complex64)
+        data_fd = np.zeros((num_bands, num_ch_in, num_hops),
+                            dtype=np.complex64)
 
         lib.afSTFT_forward_flat(self._afstft_phandle[0],
                                 ffi.from_buffer("float *", in_frame_td),
@@ -190,7 +190,7 @@ class AfSTFT():
         num_hops = in_frame_fd.shape[2]
         framesize = num_hops * self.hopsize
 
-        data_td = np.ones((num_ch_out, framesize), dtype=np.float32)
+        data_td = np.zeros((num_ch_out, framesize), dtype=np.float32)
 
         lib.afSTFT_backward_flat(self._afstft_phandle[0],
                                  ffi.from_buffer("float_complex *",

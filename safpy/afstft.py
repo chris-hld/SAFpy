@@ -7,7 +7,7 @@ class AfSTFT():
     """."""
 
     def __init__(self, num_ch_in, num_ch_out, hopsize, fs, HYBRIDMODE=True,
-                 LOWDELAYMODE=False):
+                 LOWDELAYMODE=False, afstft_format=1):
         """
         Call Constructor.
 
@@ -25,6 +25,11 @@ class AfSTFT():
             DESCRIPTION. The default is True.
         LOWDELAYMODE : TYPE, optional
             DESCRIPTION. The default is False.
+        afstft_format : TYPE, optional
+            DESCRIPTION. The default is 1.
+            0: [nBands x nChannels x nTimeHops]
+            1: [nTimeHops x nChannels x nBands]
+
 
         Returns
         -------
@@ -32,7 +37,8 @@ class AfSTFT():
 
         """
         # need to call constructor of afstft
-        afstft_format = 0  # < nBands x nChannels x nTimeHops
+        # afstft_format = 0  # < nBands x nChannels x nTimeHops
+        # afstft_format = 1  # < nTimeHops x nChannels x nBands
         # let the compiler fill in the rest...
 
         afstft_phandle = ffi.new("void **")
@@ -55,6 +61,7 @@ class AfSTFT():
 
         self._num_ch_in = num_ch_in
         self._num_ch_out = num_ch_out
+        self._afstft_format = afstft_format
 
     def __del__(self):
         """
@@ -70,10 +77,26 @@ class AfSTFT():
 
     @property
     def fs(self):
+        """
+        Return fs.
+
+        Returns
+        -------
+        fs
+
+        """
         return self._fs
 
     @property
     def hopsize(self):
+        """
+        Return hopsize.
+
+        Returns
+        -------
+        hopsize
+
+        """
         return self._hopsize
 
     @property
@@ -127,9 +150,7 @@ class AfSTFT():
         return self._processing_delay
 
     def clear_buffers(self):
-        """
-        Flushes time-domain buffers with zeros.
-        """
+        """Flushes time-domain buffers with zeros."""
         lib.afSTFT_clearBuffers(self._afstft_phandle[0])
 
     def forward(self, in_frame_td):
@@ -143,7 +164,7 @@ class AfSTFT():
 
         Returns
         -------
-        data_fd : ndarray [num_bands, num_ch_in, num_hops]
+        data_fd : ndarray [afstft_format]
             Transformed signals.
 
         """
@@ -157,8 +178,12 @@ class AfSTFT():
         num_hops = framesize // self.hopsize
         num_bands = self.num_bands
 
-        data_fd = np.zeros((num_bands, num_ch_in, num_hops),
-                            dtype=np.complex64)
+        if self._afstft_format:
+            data_fd = np.empty((num_hops, num_ch_in, num_bands),
+                               dtype=np.complex64)
+        else:
+            data_fd = np.empty((num_bands, num_ch_in, num_hops),
+                               dtype=np.complex64)
 
         lib.afSTFT_forward_flat(self._afstft_phandle[0],
                                 ffi.from_buffer("float *", in_frame_td),
@@ -172,7 +197,7 @@ class AfSTFT():
 
         Parameters
         ----------
-        in_frame_fd : ndarray [num_bands, num_ch_in, num_hops]
+        in_frame_fd : ndarray [afstft_format]
             Transformed signals.
 
         Returns
@@ -184,13 +209,19 @@ class AfSTFT():
         assert(in_frame_fd.ndim == 3)
         in_frame_fd = np.ascontiguousarray(in_frame_fd, dtype=np.complex64)
 
-        assert(in_frame_fd.shape[0] == self.num_bands)
-        num_ch_out = in_frame_fd.shape[1]
-        assert(num_ch_out == self._num_ch_out)
-        num_hops = in_frame_fd.shape[2]
+        if self._afstft_format:
+            assert(in_frame_fd.shape[2] == self.num_bands)
+            num_ch_out = in_frame_fd.shape[1]
+            assert(num_ch_out == self._num_ch_out)
+            num_hops = in_frame_fd.shape[0]
+        else:
+            assert(in_frame_fd.shape[0] == self.num_bands)
+            num_ch_out = in_frame_fd.shape[1]
+            assert(num_ch_out == self._num_ch_out)
+            num_hops = in_frame_fd.shape[2]
         framesize = num_hops * self.hopsize
 
-        data_td = np.zeros((num_ch_out, framesize), dtype=np.float32)
+        data_td = np.empty((num_ch_out, framesize), dtype=np.float32)
 
         lib.afSTFT_backward_flat(self._afstft_phandle[0],
                                  ffi.from_buffer("float_complex *",

@@ -22,7 +22,7 @@ blocksize = 8*hopsize
 
 in_sig = np.hstack((np.zeros((num_ch, blocksize)), in_sig))
 
-hSTFT = safpy.afstft.AfSTFT(num_ch, num_ch, hopsize, fs)
+hSTFT = safpy.afstft.AfSTFT(num_ch, num_ch, hopsize, fs, afstft_format=0)
 hDecor = safpy.decorrelator.LatticeDecorrelator(fs, hopsize,
                                                 hSTFT.center_freqs, num_ch)
 hDucker = safpy.decorrelator.TransientDucker(num_ch, len(hSTFT.center_freqs))

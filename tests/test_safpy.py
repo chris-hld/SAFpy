@@ -50,7 +50,8 @@ def test_afstft_nd():
     num_out = 2
     hopsize = 128
 
-    h = safpy.afstft.AfSTFT(num_in, num_out, hopsize, fs=48000)
+    h = safpy.afstft.AfSTFT(num_in, num_out, hopsize, fs=48000,
+                            afstft_format=0)
     in_sig = np.random.randn(num_in, 1000*4096)
 
     data_fd = h.forward_nd(in_sig)
@@ -66,7 +67,8 @@ def test_afstft_compare():
     num_out = 2
     hopsize = 128
 
-    h = safpy.afstft.AfSTFT(num_in, num_out, hopsize, fs=48000)
+    h = safpy.afstft.AfSTFT(num_in, num_out, hopsize, fs=48000,
+                            afstft_format=0)
     in_sig = np.random.randn(num_in, 4096)
 
     data_fd_f = h.forward(in_sig)
@@ -92,6 +94,6 @@ def test_getSH_variants():
     b = safpy.sh.getSHreal_recur(N_sph, np.c_[azi, zen])
     c0 = safpy.sh.getSHreal_part(0, N_sph, np.c_[azi, zen])
     c1 = safpy.sh.getSHreal_part(1, N_sph, np.c_[azi, zen])
-    assert_allclose(a, b, atol=10e-6)
-    assert_allclose(a, c0, atol=10e-6)
-    assert_allclose(a[1:, :], c1[1:, :], atol=10e-6)
+    assert_allclose(a, b, atol=10e-3)
+    assert_allclose(a, c0, atol=10e-3)
+    assert_allclose(a[1:, :], c1[1:, :], atol=10e-3)

@@ -35,6 +35,7 @@ jobs:
     - name: Dependency packages
       run: |
         sudo apt-get update && sudo apt-get install libsndfile1 liblapack3 liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
+        sudo ldconfig
 
     - name: Configure CMake (Linux)
       # Note the current convention is to use the -S and -B options here to specify source 

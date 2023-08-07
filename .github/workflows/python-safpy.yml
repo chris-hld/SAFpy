@@ -36,9 +36,6 @@ jobs:
       run: |
         sudo apt-get update && sudo apt-get install liblapack3 liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
 
-    - name: Create Build Environment
-
-
     - name: Configure CMake (Linux)
       # Use a bash shell so we can use the same syntax for environment variable
       # access regardless of the host operating system

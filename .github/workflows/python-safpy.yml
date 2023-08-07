@@ -33,7 +33,7 @@ jobs:
       run: git submodule update --init --recursive
 
     - name: Build SAF
-      uses: ./Spatial_Audio_Framework/.github/workflows/cmake.yml@v1
+      uses: ./Spatial_Audio_Framework/.github/workflows/cmake.yml@main
       
     - name: Lint with flake8
       run: |

@@ -32,9 +32,9 @@ jobs:
     - name: Checkout submodules
       run: git submodule update --init --recursive
 
-    - name: Dependecy packages
+    - name: Dependency packages
       run: |
-        sudo apt-get update && sudo apt-get install liblapack3 liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
+        sudo apt-get update && sudo apt-get install libsndfile1 liblapack3 liblapack-dev libopenblas-base libopenblas-dev liblapacke-dev
 
     - name: Configure CMake (Linux)
       # Note the current convention is to use the -S and -B options here to specify source 
@@ -46,6 +46,8 @@ jobs:
     - name: Build SAF
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: cmake --build ./Spatial_Audio_Framework/build
+    - name: Test SAF
+      run: ./Spatial_Audio_Framework/build/test/saf_test
       
     - name: Lint with flake8
       run: |

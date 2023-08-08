@@ -1,5 +1,7 @@
 # SAFpy
 
+[![Python application](https://github.com/chris-hld/SAFpy/actions/workflows/python-safpy.yml/badge.svg)](https://github.com/chris-hld/SAFpy/actions/workflows/python-safpy.yml)
+
 This is a Python binding / wrapper for
 https://github.com/leomccormack/Spatial_Audio_Framework
 
@@ -17,7 +19,7 @@ Running `pip install -e .` builds it automatically
 (you can also build manually, e.g., for debugging, with 
 `python safpy_build.py`)
 
-By default, it assumes SAF in a folder parallel to safpy. You can simply adapt
+By default, it assumes SAF in a subdirectory, which is obtained by `git submodule update --init --recursive `. You can simply adapt
 the variable `saf_path` in `safpy_build.py` if needed.
 
 Install

@@ -5,7 +5,8 @@ ffibuilder = FFI()
 home_dir = os.path.expanduser('~')
 this_dir = os.path.abspath(os.path.dirname(__file__))
 # define saf_path here, assumes SAF parallel to safpy by default.
-saf_path = os.path.join(this_dir, '..', 'Spatial_Audio_Framework')
+saf_path = os.path.join(this_dir, ".", "Spatial_Audio_Framework")
+saf_performance_lib = ["openblas", "lapacke"]
 
 # cdef() expects a single string declaring the C types, functions and
 # globals needed to use the shared object. It must be in valid C syntax.
@@ -185,6 +186,8 @@ c_header_source += f"""
     #include "{saf_path}/framework/include/saf.h"  // the C header of the lib
     """
 libraries.append(saf_path + "/build/framework/saf")  # lib name, for the linker
+
+libraries.extend(saf_performance_lib)
 
 print("Compiling _safpy with:")
 print(f"C_Header_Source: {c_header_source}")

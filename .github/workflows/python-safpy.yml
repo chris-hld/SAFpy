@@ -14,7 +14,6 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -52,10 +51,12 @@ jobs:
         ldd ./Spatial_Audio_Framework/build/test/saf_test
         ./Spatial_Audio_Framework/build/test/saf_test
 
+
   test:
     needs: build
     runs-on: ubuntu-latest
-      
+    
+    steps:
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names

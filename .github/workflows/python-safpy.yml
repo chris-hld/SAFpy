@@ -51,6 +51,10 @@ jobs:
       run: |
         ldd ./Spatial_Audio_Framework/build/test/saf_test
         ./Spatial_Audio_Framework/build/test/saf_test
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
       
     - name: Lint with flake8
       run: |
@@ -59,7 +63,7 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-    - name: Install package
+    - name: Build and install package
       run: python -m pip install -e .
     - name: Test with pytest
       run: |

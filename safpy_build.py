@@ -6,7 +6,18 @@ home_dir = os.path.expanduser('~')
 this_dir = os.path.abspath(os.path.dirname(__file__))
 # define saf_path here, assumes SAF parallel to safpy by default.
 saf_path = os.path.join(this_dir, ".", "Spatial_Audio_Framework")
-saf_performance_lib = ["openblas", "lapacke"]
+
+# Populate these
+c_header_source = ""
+include_dirs = []
+libraries = []
+library_dirs = []
+
+saf_performance_lib = []
+extra_link_args = []
+
+saf_performance_lib.extend(["openblas", "lapacke"])
+#extra_link_args.extend(['-Wl,-framework', '-Wl,Accelerate'])
 
 # cdef() expects a single string declaring the C types, functions and
 # globals needed to use the shared object. It must be in valid C syntax.
@@ -171,13 +182,6 @@ void transientDucker_apply(void * hDucker,
 
 """)
 
-# Populate these
-c_header_source = ""
-include_dirs = []
-libraries = []
-library_dirs = []
-
-
 # set_source() gives the name of the python extension module to
 # produce, and some C source code as a string.  This C code needs
 # to make the declarated functions, types and globals available,
@@ -194,10 +198,13 @@ print(f"C_Header_Source: {c_header_source}")
 print(f"include_dirs: {include_dirs}")
 print(f"libraries: {libraries}")
 print(f"library_dirs: {library_dirs}")
+print(f"extra_link_args: {extra_link_args}")
+
 
 
 ffibuilder.set_source("_safpy", c_header_source, include_dirs=include_dirs,
-                      libraries=libraries, library_dirs=library_dirs)
+                      libraries=libraries, library_dirs=library_dirs, 
+                      extra_link_args=extra_link_args)
 
 if __name__ == "__main__":
     ffibuilder.compile(verbose=True)

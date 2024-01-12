@@ -11,7 +11,7 @@ add/contribute more if needed!
 
 Prerequisites
 ---
-1. Compile SAF, see instructions in its docs
+1. Compile SAF, provided as a submodule, see instructions in its [docs](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/README.md)
 2. Install numpy and CFFI, e.g. `conda install numpy cffi`
 3. Now we need to build *safpy*, which creates the module. 
 Running `pip install -e .` builds it automatically
@@ -21,6 +21,8 @@ Running `pip install -e .` builds it automatically
 
 By default, it assumes SAF in a subdirectory, which is obtained by `git submodule update --init --recursive `. You can simply adapt
 the variable `saf_path` in `safpy_build.py` if needed.
+
+If in trouble you can have a look at the CI steps [here](https://github.com/chris-hld/SAFpy/blob/master/.github/workflows/python-safpy.yml).
 
 Install
 ---

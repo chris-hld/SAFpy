@@ -1,4 +1,5 @@
 import os.path
+import sys
 from cffi import FFI
 ffibuilder = FFI()
 
@@ -16,8 +17,14 @@ library_dirs = []
 saf_performance_lib = []
 extra_link_args = []
 
-saf_performance_lib.extend(["openblas", "lapacke"])
-#extra_link_args.extend(['-Wl,-framework', '-Wl,Accelerate'])
+# Sensible default, please adjust if needed
+if sys.platform == "darwin":
+    print("SAFPY using default Apple Accelerate")
+    extra_link_args.extend(['-Wl,-framework', '-Wl,Accelerate'])
+else:
+    print("SAFPY using default OpenBLAS/LAPACKE")
+    saf_performance_lib.extend(["openblas", "lapacke"])
+
 
 # cdef() expects a single string declaring the C types, functions and
 # globals needed to use the shared object. It must be in valid C syntax.

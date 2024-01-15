@@ -21,6 +21,7 @@ Running `pip install -e .` builds it automatically
 
 By default, it assumes SAF in a subdirectory, which is obtained by `git submodule update --init --recursive `. You can simply adapt
 the variable `saf_path` in `safpy_build.py` if needed.
+There you also have access to change the performance library options.
 
 If in trouble you can have a look at the CI steps [here](https://github.com/chris-hld/SAFpy/blob/master/.github/workflows/python-safpy.yml).
 

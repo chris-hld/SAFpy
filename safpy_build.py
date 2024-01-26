@@ -17,7 +17,8 @@ library_dirs = []
 saf_performance_lib = []
 extra_link_args = []
 
-# Sensible default, please adjust if needed
+# Sensible default, please adjust if needed.
+# In case of doubt, you can also check numpy.show_config() for its BLAS
 if sys.platform == "darwin":
     print("SAFPY using default Apple Accelerate")
     extra_link_args.extend(['-Wl,-framework', '-Wl,Accelerate'])

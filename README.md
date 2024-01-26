@@ -31,16 +31,14 @@ with `.` in the SAFpy folder, builds it automatically and installs any potential
 6. (Optional) Test if everything works, run `pytest -vvv` in the SAFpy folder.
 
 
-Details
----
-You can also build SAFpy manually, e.g., for debugging, with 
-`python safpy_build.py`.
-
-By default, it assumes SAF in a subdirectory, which is obtained by `git submodule update --init --recursive `. 
+By default, SAF is assumed in a subdirectory, which is also obtained by `git submodule update --init --recursive `. 
 In case you want to use a different location, you can simply adapt the variable `saf_path` in `safpy_build.py` if needed.
 There you also have access to change the SAF performance library options, in case the default is not working for you.
 
-If in trouble you can have a look at the CI steps [here](https://github.com/chris-hld/SAFpy/blob/master/.github/workflows/python-safpy.yml).
+You can also build SAFpy manually, e.g., for debugging, with 
+`python safpy_build.py`.
+
+If in trouble you can also have a look at the CI steps [here](https://github.com/chris-hld/SAFpy/blob/master/.github/workflows/python-safpy.yml).
 
 Usage
 ---

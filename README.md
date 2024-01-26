@@ -22,7 +22,7 @@ For example with
 
 3. Install numpy and CFFI (in the environment you want to use), e.g. `conda install numpy cffi`
 4. Now we need to build *safpy*, which creates the module. 
-Running `pip install -e .` (with `.` in the SAFpy folder) builds it automatically and installs any potentially missing Python dependencies.
+Running (in the environment you want to use) `pip install -e .` , with `.` in the SAFpy folder, builds it automatically and installs any potentially missing Python dependencies.
 6. (Optional) Test if everything works, run `pytest -vvv` in the SAFpy folder.
 
 

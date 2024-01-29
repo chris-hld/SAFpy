@@ -44,8 +44,6 @@ jobs:
               sudo ldconfig
             elif [ "$RUNNER_OS" == "macOS" ]; then
               brew install openblas
-            elif [ "$RUNNER_OS" == "Windows" ]; then
-              #install openblas
             else
               echo "$RUNNER_OS not supported"
               exit 1

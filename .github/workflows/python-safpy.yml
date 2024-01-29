@@ -44,6 +44,8 @@ jobs:
               sudo ldconfig
             elif [ "$RUNNER_OS" == "macOS" ]; then
               brew install openblas
+            elif [ "$RUNNER_OS" == "Windows" ]; then
+              curl.exe --output tmp.zip --url https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.26/OpenBLAS-0.3.26-x64.zip
             else
               echo "$RUNNER_OS not supported"
               exit 1

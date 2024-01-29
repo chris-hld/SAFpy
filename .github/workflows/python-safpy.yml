@@ -62,7 +62,7 @@ jobs:
           cmake -S ./Spatial_Audio_Framework/ -B ./Spatial_Audio_Framework/build -DSAF_PERFORMANCE_LIB=SAF_USE_OPEN_BLAS_AND_LAPACKE -DSAF_BUILD_EXAMPLES=0
         elif [ "$RUNNER_OS" == "macOS" ]; then
           cmake -S ./Spatial_Audio_Framework/ -B ./Spatial_Audio_Framework/build -DSAF_PERFORMANCE_LIB=SAF_USE_OPEN_BLAS_AND_LAPACKE -DOPENBLAS_LIBRARY=/usr/local/opt/openblas/lib/libopenblas.dylib -DSAF_BUILD_EXAMPLES=0
-
+        fi
     - name: Build SAF
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: cmake --build ./Spatial_Audio_Framework/build

@@ -46,10 +46,8 @@ jobs:
               brew install openblas
             elif [ "$RUNNER_OS" == "Windows" ]; then
               curl https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.26/OpenBLAS-0.3.26-x64.zip -L -o tmp.zip
-              ls
               7z x ./tmp.zip -oopenBLAS
               ls
-              ls ./openBLAS
             else
               echo "$RUNNER_OS not supported"
               exit 1
@@ -67,7 +65,7 @@ jobs:
         elif [ "$RUNNER_OS" == "macOS" ]; then
           cmake -S ./Spatial_Audio_Framework/ -B ./Spatial_Audio_Framework/build -DSAF_PERFORMANCE_LIB=SAF_USE_APPLE_ACCELERATE -DSAF_BUILD_EXAMPLES=0
         elif [ "$RUNNER_OS" == "Windows" ]; then
-          cmake -S ./Spatial_Audio_Framework/ -B ./Spatial_Audio_Framework/build -DSAF_PERFORMANCE_LIB=SAF_USE_OPEN_BLAS_AND_LAPACKE -DOPENBLAS_LIBRARY="./OpenBLAS/lib/libopenblas.dll" -DLAPACKE_LIBRARY="./OpenBLAS/lib/libopenblas.dll" -DOPENBLAS_HEADER_PATH="./OpenBLAS/include" -DSAF_BUILD_EXAMPLES=0
+          cmake -S ./Spatial_Audio_Framework/ -B ./Spatial_Audio_Framework/build -DSAF_PERFORMANCE_LIB=SAF_USE_OPEN_BLAS_AND_LAPACKE -DOPENBLAS_LIBRARY="../OpenBLAS/lib/libopenblas.dll" -DLAPACKE_LIBRARY="../OpenBLAS/lib/libopenblas.dll" -DOPENBLAS_HEADER_PATH="../OpenBLAS/include" -DSAF_BUILD_EXAMPLES=0
         fi
       shell: bash
 

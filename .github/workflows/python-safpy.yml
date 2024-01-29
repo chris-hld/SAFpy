@@ -66,9 +66,13 @@ jobs:
     - name: Build SAF
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: cmake --build ./Spatial_Audio_Framework/build
+
+    - name: Print shared object dependencies 
+      run: ldd ./Spatial_Audio_Framework/build/test/saf_test
+      if: ${{ contains( runner.os, 'Linux' ) }}
+
     - name: Test SAF
       run: |
-        ldd ./Spatial_Audio_Framework/build/test/saf_test
         ./Spatial_Audio_Framework/build/test/saf_test
 
     - name: Lint with flake8

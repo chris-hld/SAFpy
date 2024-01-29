@@ -65,13 +65,15 @@ jobs:
         elif [ "$RUNNER_OS" == "Windows" ]; then
           cmake -S ./Spatial_Audio_Framework/ -B ./Spatial_Audio_Framework/build -DSAF_PERFORMANCE_LIB=SAF_USE_OPEN_BLAS_AND_LAPACKE -DOPENBLAS_LIBRARY=C:/Program Files/OpenBLAS/lib/libopenblas.dylib -DLAPACKE_LIBRARY=C:/Program Files/OpenBLAS/lib/libopenblas.dylib -DOPENBLAS_HEADER_PATH=C:/Program Files/OpenBLAS/include -DSAF_BUILD_EXAMPLES=0
         fi
+      shell: bash
+
     - name: Build SAF
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: cmake --build ./Spatial_Audio_Framework/build -j2
 
-    - name: Print shared object dependencies 
-      run: ldd ./Spatial_Audio_Framework/build/test/saf_test
+    - name: Print shared object dependencies
       if: ${{ contains( runner.os, 'Linux' ) }}
+      run: ldd ./Spatial_Audio_Framework/build/test/saf_test
 
     - name: Test SAF
       run: |

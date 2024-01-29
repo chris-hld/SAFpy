@@ -45,7 +45,7 @@ jobs:
             elif [ "$RUNNER_OS" == "macOS" ]; then
               brew install openblas
             elif [ "$RUNNER_OS" == "Windows" ]; then
-              curl -O -K -L https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.26/OpenBLAS-0.3.26-x64.zip -o ./tmp.zip
+              curl https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.26/OpenBLAS-0.3.26-x64.zip -O -L -o ./tmp.zip
               ls
               7z x ./tmp.zip -oopenBLAS
               ls

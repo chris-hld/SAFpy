@@ -83,11 +83,14 @@ jobs:
       run: |
           ls -lh ./Spatial_Audio_Framework/build/test
           ./Spatial_Audio_Framework/build/test/saf_test
+      shell: bash
 
     - name: Test SAF (Windows)
       if: runner.os == 'Windows'
       run: |
-          .\Spatial_Audio_Framework\build\test\Debug\saf_test.exe
+          ls -lh ./Spatial_Audio_Framework/build/test/saf_test/Debug/
+          ./Spatial_Audio_Framework/build/test/saf_test/Debug/saf_test.exe
+      shell: bash
 
     - name: Lint with flake8
       run: |

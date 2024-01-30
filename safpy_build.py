@@ -33,8 +33,15 @@ ffibuilder.cdef("""
 
 #define SAF_VERSION ...
 
-typedef float _Complex float_complex;
-typedef double _Complex double_complex;
+#if defined(_MSC_VER)
+    #define _CRT_USE_C_COMPLEX_H
+    #include <complex.h>
+    typedef _Fcomplex float_complex;
+    typedef _Dcomplex double_complex;
+#else
+    typedef float _Complex float_complex;
+    typedef double _Complex double_complex;
+#endif
 
 typedef enum _AFSTFT_FDDATA_FORMAT{
     AFSTFT_BANDS_CH_TIME, /**< nBands x nChannels x nTimeHops */

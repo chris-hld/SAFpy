@@ -33,6 +33,15 @@ ffibuilder.cdef("""
 
 #define SAF_VERSION ...
 
+#if defined(_MSC_VER)
+    #define _CRT_USE_C_COMPLEX_H
+    #include <complex.h>
+    typedef _Fcomplex float_complex;
+    typedef _Dcomplex double_complex;
+#else
+    typedef float _Complex float_complex;
+    typedef double _Complex double_complex;
+#endif
 
 typedef enum _AFSTFT_FDDATA_FORMAT{
     AFSTFT_BANDS_CH_TIME, /**< nBands x nChannels x nTimeHops */
@@ -193,16 +202,6 @@ void transientDucker_apply(void * hDucker,
 # to make the declarated functions, types and globals available,
 # so it is often just the "#include".
 c_header_source += f"""
-    #if defined(_MSC_VER)
-        #define _CRT_USE_C_COMPLEX_H
-        #include <complex.h>
-        typedef _Fcomplex float_complex;
-        typedef _Dcomplex double_complex;
-    #else
-        typedef float _Complex float_complex;
-        typedef double _Complex double_complex;
-    #endif
-
     #include "{saf_path}/framework/include/saf.h"  // the C header of the lib
     """
 libraries.append(saf_path + "/build/framework/saf")  # lib name, for the linker

@@ -81,7 +81,7 @@ jobs:
     - name: Test SAF
       run: |
         if [ "$RUNNER_OS" == "Windows" ]; then
-          ./Spatial_Audio_Framework/build/test/saf_test.exe
+          ./Spatial_Audio_Framework/build/test/Debug/saf_test.exe
         else
           ./Spatial_Audio_Framework/build/test/saf_test
         fi

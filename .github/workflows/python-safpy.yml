@@ -80,7 +80,12 @@ jobs:
 
     - name: Test SAF
       run: |
-        ./Spatial_Audio_Framework/build/test/saf_test
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          ./Spatial_Audio_Framework/build/test/saf_test.exe
+        else
+          ./Spatial_Audio_Framework/build/test/saf_test
+        fi
+      shell: bash
 
     - name: Lint with flake8
       run: |

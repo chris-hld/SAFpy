@@ -24,7 +24,7 @@ if sys.platform == "darwin":
     extra_link_args.extend(['-Wl,-framework', '-Wl,Accelerate'])
 else:
     print("SAFPY using default OpenBLAS/LAPACKE")
-    #saf_performance_lib.extend(["openblas", "lapacke"])
+    saf_performance_lib.extend(["openblas"])
 
 
 # cdef() expects a single string declaring the C types, functions and

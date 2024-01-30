@@ -66,7 +66,7 @@ jobs:
         elif [ "$RUNNER_OS" == "macOS" ]; then
           cmake -S ./Spatial_Audio_Framework/ -B ./Spatial_Audio_Framework/build -DSAF_PERFORMANCE_LIB=SAF_USE_APPLE_ACCELERATE -DSAF_BUILD_EXAMPLES=0
         elif [ "$RUNNER_OS" == "Windows" ]; then
-          cmake -S ./Spatial_Audio_Framework/ -B ./Spatial_Audio_Framework/build -DSAF_PERFORMANCE_LIB=SAF_USE_OPEN_BLAS_AND_LAPACKE -DOPENBLAS_LIBRARY=$GITHUB_WORKSPACE/OpenBLAS/bin/libopenblas.dll -DLAPACKE_LIBRARY=$GITHUB_WORKSPACE/OpenBLAS/bin/libopenblas.dll -DOPENBLAS_HEADER_PATH=$GITHUB_WORKSPACE/OpenBLAS/include/ -DSAF_BUILD_EXAMPLES=0 
+          cmake -S ./Spatial_Audio_Framework/ -B ./Spatial_Audio_Framework/build -DSAF_PERFORMANCE_LIB=SAF_USE_OPEN_BLAS_AND_LAPACKE -DOPENBLAS_LIBRARY=$GITHUB_WORKSPACE/OpenBLAS/lib/libopenblas.lib -DLAPACKE_LIBRARY=$GITHUB_WORKSPACE/OpenBLAS/lib/libopenblas.lib -DOPENBLAS_HEADER_PATH=$GITHUB_WORKSPACE/OpenBLAS/include/ -DSAF_BUILD_EXAMPLES=0 
         fi
       shell: bash
 

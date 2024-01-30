@@ -95,7 +95,7 @@ void getSHcomplex(/* Input Arguments */
                     float* dirs_rad,
                     int nDirs,
                     /* Output Arguments */
-                    float_complex* Y);
+                    float _Complex * Y);
 
 void generateVBAPgainTable3D(/* Input arguments */
                              float* ls_dirs_deg,
@@ -134,20 +134,20 @@ void afSTFT_clearBuffers(void * const hSTFT);
 void afSTFT_forward(void * const hSTFT,
                     float** dataTD,
                     int framesize,
-                    float_complex*** dataFD);
+                    float _Complex *** dataFD);
 
 void afSTFT_backward(void * const hSTFT,
-                     float_complex*** dataFD,
+                     float _Complex *** dataFD,
                      int framesize,
                      float** dataTD);
 
 void afSTFT_forward_flat(void * const hSTFT,
                          float* dataTD,
                          int framesize,
-                         float_complex* dataFD);
+                         float _Complex * dataFD);
 
 void afSTFT_backward_flat(void * const hSTFT,
-                          float_complex* dataFD,
+                          float _Complex * dataFD,
                           int framesize,
                           float* dataTD);
 
@@ -169,9 +169,9 @@ void latticeDecorrelator_destroy(void ** phDecor);
 void latticeDecorrelator_reset(void * hDecor);
 
 void latticeDecorrelator_apply(void * hDecor,
-                               float_complex *** inFrame,
+                               float _Complex *** inFrame,
                                int nTimeSlots,
-                               float_complex *** decorFrame);
+                               float _Complex *** decorFrame);
 void transientDucker_create(void ** 	phDucker,
                             int 	nCH,
                             int 	nBands);
@@ -179,12 +179,12 @@ void transientDucker_create(void ** 	phDucker,
 void transientDucker_destroy(void ** phDucker);
 
 void transientDucker_apply(void * hDucker,
-                           float_complex *** inFrame,
+                           float _Complex *** inFrame,
                            int nTimeSlots,
                            float alpha,
                            float beta,
-                           float_complex *** residualFrame,
-                           float_complex *** transientFrame);
+                           float _Complex *** residualFrame,
+                           float _Complex *** transientFrame);
 
 """)
 
@@ -193,16 +193,6 @@ void transientDucker_apply(void * hDucker,
 # to make the declarated functions, types and globals available,
 # so it is often just the "#include".
 c_header_source += f"""
-    #if defined(_MSC_VER)
-        #define _CRT_USE_C_COMPLEX_H
-        #include <complex.h>
-        typedef _Fcomplex float_complex;
-        typedef _Dcomplex double_complex;
-    #else
-        typedef float _Complex float_complex;
-        typedef double _Complex double_complex;
-    #endif
-
     #include "{saf_path}/framework/include/saf.h"  // the C header of the lib
     """
 libraries.append(saf_path + "/build/framework/saf")  # lib name, for the linker

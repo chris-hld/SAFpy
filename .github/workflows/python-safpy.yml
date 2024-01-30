@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macOS-latest, windows-2019]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
         python-version: ["3.10", "3.11"]
 
     steps:
@@ -81,9 +81,9 @@ jobs:
     - name: Test SAF
       run: |
         if [ "$RUNNER_OS" == "Windows" ]; then
-          ls .\Spatial_Audio_Framework\build\test
-          ls .\Spatial_Audio_Framework\build\test\Debug\
-          .\Spatial_Audio_Framework\build\test\Debug\saf_test.exe
+          ls ./Spatial_Audio_Framework/build/test/
+          ls ./Spatial_Audio_Framework/build/test/Debug
+          ./Spatial_Audio_Framework/build/test/Debug/saf_test.exe
         else
           ./Spatial_Audio_Framework/build/test/saf_test
         fi

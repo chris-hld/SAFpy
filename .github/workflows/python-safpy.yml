@@ -103,7 +103,7 @@ jobs:
         if [ "$RUNNER_OS" != "Windows" ]; then
           python setup.py build
         else
-          python setup.py build --compiler=mingw32
+          python setup.py build --compiler=mingw64
         fi
       shell: bash
 

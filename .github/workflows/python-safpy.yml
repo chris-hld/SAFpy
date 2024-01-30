@@ -92,7 +92,8 @@ jobs:
           cp ./Spatial_Audio_Framework/build/test/Debug/saf_test.exe ./Spatial_Audio_Framework/build/test/
           ls -lh ./Spatial_Audio_Framework/build/test/
           cd ./Spatial_Audio_Framework/build/test/
-          saf_test.exe
+          ls -lh
+          ./saf_test.exe
           cd $GITHUB_WORKSPACE
       shell: bash
 

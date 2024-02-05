@@ -9,7 +9,7 @@ So far, there are a bunch of functions exposed, please feel free to
 add/contribute more if needed!
 
 
-Quickstart
+Install
 ---
 1. Clone SAFpy, SAF is provided as a submodule, and change to the folder
 
@@ -24,7 +24,7 @@ For example with
 4. Now we need to build *safpy*, which creates the module. 
 Running (in the environment you want to use)
 
-```pip install -e .```,
+```pip install -e .```
 
 with `.` in the SAFpy folder, builds it automatically and installs any potentially missing Python dependencies.
 
@@ -43,4 +43,4 @@ If in trouble you can also have a look at the CI steps [here](https://github.com
 Usage
 ---
 Use *safpy* as a python package.
-Have a look at `examples/test_call.py`!
+Have a look at [examples/test_call.py](https://github.com/chris-hld/SAFpy/blob/master/examples/test_call.py) and [examples/block_processing](https://github.com/chris-hld/SAFpy/blob/master/examples/block_processing.py)!

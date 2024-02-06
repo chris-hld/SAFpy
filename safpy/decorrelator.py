@@ -140,25 +140,25 @@ class LatticeDecorrelator():
         num_t_slots = in_frame_fd.shape[2]
 
         # populate
-        data_in_ptr = ffi.cast("float_complex ***",
+        data_in_ptr = ffi.cast("float _Complex ***",
                                lib.malloc2d(num_bands, num_ch,
-                                            ffi.sizeof("float_complex *")))
+                                            ffi.sizeof("float _Complex *")))
         for idx_band in range(num_bands):
             for idx_ch in range(num_ch):
                 data_in_ptr[idx_band][idx_ch] = \
-                    ffi.from_buffer("float_complex *",
+                    ffi.from_buffer("float _Complex *",
                                     in_frame_fd[idx_band, idx_ch, :])
 
-        data_out_ptr = ffi.cast("float_complex ***",
+        data_out_ptr = ffi.cast("float _Complex ***",
                                 lib.malloc3d(num_bands, num_ch, num_t_slots,
-                                             ffi.sizeof("float_complex *")))
+                                             ffi.sizeof("float _Complex *")))
         lib.latticeDecorrelator_apply(self._decorrelator_phandle[0],
                                       data_in_ptr, num_t_slots, data_out_ptr)
 
         # unpack
         data_out = np.reshape(np.frombuffer(ffi.buffer(data_out_ptr[0][0],
                                             num_bands*num_ch*num_t_slots *
-                                            ffi.sizeof("float_complex")),
+                                            ffi.sizeof("float _Complex")),
                                             dtype=np.complex64),
                               (num_bands, num_ch, num_t_slots))
 
@@ -240,22 +240,22 @@ class TransientDucker():
         num_t_slots = in_frame_fd.shape[2]
 
         # populate
-        data_in_ptr = ffi.cast("float_complex ***",
+        data_in_ptr = ffi.cast("float _Complex ***",
                                lib.malloc2d(num_bands, num_ch,
-                                            ffi.sizeof("float_complex *")))
+                                            ffi.sizeof("float _Complex *")))
         for idx_band in range(num_bands):
             for idx_ch in range(num_ch):
                 data_in_ptr[idx_band][idx_ch] = \
-                    ffi.from_buffer("float_complex *",
+                    ffi.from_buffer("float _Complex *",
                                     in_frame_fd[idx_band, idx_ch, :])
 
-        data_res_ptr = ffi.cast("float_complex ***",
+        data_res_ptr = ffi.cast("float _Complex ***",
                                 lib.malloc3d(num_bands, num_ch, num_t_slots,
-                                             ffi.sizeof("float_complex *")))
+                                             ffi.sizeof("float _Complex *")))
 
-        data_trs_ptr = ffi.cast("float_complex ***",
+        data_trs_ptr = ffi.cast("float _Complex ***",
                                 lib.malloc3d(num_bands, num_ch, num_t_slots,
-                                             ffi.sizeof("float_complex *")))
+                                             ffi.sizeof("float _Complex *")))
         lib.transientDucker_apply(self._ducker_phandle[0],
                                   data_in_ptr, num_t_slots, alpha, beta,
                                   data_res_ptr, data_trs_ptr)
@@ -263,12 +263,12 @@ class TransientDucker():
         # unpack
         data_res = np.reshape(np.frombuffer(ffi.buffer(data_res_ptr[0][0],
                                             num_bands*num_ch*num_t_slots *
-                                            ffi.sizeof("float_complex")),
+                                            ffi.sizeof("float _Complex")),
                                             dtype=np.complex64),
                               (num_bands, num_ch, num_t_slots))
         data_trs = np.reshape(np.frombuffer(ffi.buffer(data_trs_ptr[0][0],
                                             num_bands*num_ch*num_t_slots *
-                                            ffi.sizeof("float_complex")),
+                                            ffi.sizeof("float _Complex")),
                                             dtype=np.complex64),
                               (num_bands, num_ch, num_t_slots))
         lib.free(data_in_ptr)

@@ -188,7 +188,7 @@ class AfSTFT():
         lib.afSTFT_forward_flat(self._afstft_phandle[0],
                                 ffi.from_buffer("float *", in_frame_td),
                                 framesize,
-                                ffi.from_buffer("float_complex *", data_fd))
+                                ffi.from_buffer("float _Complex *", data_fd))
         return data_fd
 
     def backward(self, in_frame_fd):
@@ -224,7 +224,7 @@ class AfSTFT():
         data_td = np.empty((num_ch_out, framesize), dtype=np.float32)
 
         lib.afSTFT_backward_flat(self._afstft_phandle[0],
-                                 ffi.from_buffer("float_complex *",
+                                 ffi.from_buffer("float _Complex *",
                                                  in_frame_fd),
                                  framesize,
                                  ffi.from_buffer("float *", data_td))
@@ -249,16 +249,16 @@ class AfSTFT():
             data_td_ptr[idx_ch] = ffi.from_buffer("float *",
                                                   in_frame_td[idx_ch, :])
 
-        data_fd_ptr = ffi.cast("float_complex ***",
+        data_fd_ptr = ffi.cast("float _Complex ***",
                                lib.malloc3d(num_bands, num_ch_in, num_hops,
-                                            ffi.sizeof("float_complex")))
+                                            ffi.sizeof("float _Complex")))
         lib.afSTFT_forward(self._afstft_phandle[0], data_td_ptr, framesize,
                            data_fd_ptr)
 
         # unpack
         data_fd = np.reshape(np.frombuffer(ffi.buffer(data_fd_ptr[0][0],
                                            num_bands*num_ch_in*num_hops *
-                                           ffi.sizeof("float_complex")),
+                                           ffi.sizeof("float _Complex")),
                                            dtype=np.complex64),
                              (num_bands, num_ch_in, num_hops))
 
@@ -277,13 +277,13 @@ class AfSTFT():
         num_bands = self.num_bands
 
         # populate
-        data_fd_ptr = ffi.cast("float_complex ***",
+        data_fd_ptr = ffi.cast("float _Complex ***",
                                lib.malloc2d(num_bands, num_ch_out,
-                                            ffi.sizeof("float_complex*")))
+                                            ffi.sizeof("float _Complex*")))
         for idx_band in range(num_bands):
             for idx_ch in range(num_ch_out):
                 data_fd_ptr[idx_band][idx_ch] = \
-                    ffi.from_buffer("float_complex *",
+                    ffi.from_buffer("float _Complex *",
                                     in_frame_fd[idx_band, idx_ch, :])
 
         data_td_ptr = ffi.cast("float **", lib.malloc2d(num_ch_out, framesize,

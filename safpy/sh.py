@@ -109,5 +109,5 @@ def getSHcomplex(order, dirs):
     nDirs = np.shape(dirs)[0]
     Y = np.empty(((order+1)**2, nDirs), dtype=np.complex64)
     lib.getSHcomplex(order, ffi.from_buffer("float *", dirs),
-                     nDirs, ffi.from_buffer("float_complex *", Y))
+                     nDirs, ffi.from_buffer("float _Complex *", Y))
     return Y

@@ -36,6 +36,21 @@ ffibuilder.cdef("""
                 
 """)
 
+if sys.platform != "win32":
+    ffibuilder.cdef("""
+                    
+    typedef float _Complex float_complex;
+    typedef double _Complex double_complex;
+
+    """)
+else:
+    ffibuilder.cdef("""
+                    
+    typedef _Fcomplex float_complex;
+    typedef _Dcomplex double_complex;
+
+    """)
+
 ffibuilder.cdef("""
 
 typedef enum _AFSTFT_FDDATA_FORMAT{
@@ -98,7 +113,7 @@ void getSHcomplex(/* Input Arguments */
                     float* dirs_rad,
                     int nDirs,
                     /* Output Arguments */
-                    float _Complex* Y);
+                    float_complex* Y);
 
 void generateVBAPgainTable3D(/* Input arguments */
                              float* ls_dirs_deg,
@@ -137,20 +152,20 @@ void afSTFT_clearBuffers(void * const hSTFT);
 void afSTFT_forward(void * const hSTFT,
                     float** dataTD,
                     int framesize,
-                    float _Complex*** dataFD);
+                    float_complex*** dataFD);
 
 void afSTFT_backward(void * const hSTFT,
-                     float _Complex*** dataFD,
+                     float_complex*** dataFD,
                      int framesize,
                      float** dataTD);
 
 void afSTFT_forward_flat(void * const hSTFT,
                          float* dataTD,
                          int framesize,
-                         float _Complex* dataFD);
+                         float_complex* dataFD);
 
 void afSTFT_backward_flat(void * const hSTFT,
-                          float _Complex* dataFD,
+                          float_complex* dataFD,
                           int framesize,
                           float* dataTD);
 
@@ -172,9 +187,9 @@ void latticeDecorrelator_destroy(void ** phDecor);
 void latticeDecorrelator_reset(void * hDecor);
 
 void latticeDecorrelator_apply(void * hDecor,
-                               float _Complex *** inFrame,
+                               float_complex *** inFrame,
                                int nTimeSlots,
-                               float _Complex *** decorFrame);
+                               float_complex *** decorFrame);
 void transientDucker_create(void ** 	phDucker,
                             int 	nCH,
                             int 	nBands);
@@ -182,12 +197,12 @@ void transientDucker_create(void ** 	phDucker,
 void transientDucker_destroy(void ** phDucker);
 
 void transientDucker_apply(void * hDucker,
-                           float _Complex *** inFrame,
+                           float_complex *** inFrame,
                            int nTimeSlots,
                            float alpha,
                            float beta,
-                           float _Complex *** residualFrame,
-                           float _Complex *** transientFrame);
+                           float_complex *** residualFrame,
+                           float_complex *** transientFrame);
 
 """)
 

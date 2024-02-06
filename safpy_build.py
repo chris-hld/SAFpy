@@ -219,6 +219,9 @@ libraries.append(saf_path + "/build/framework/saf")  # lib name, for the linker
 
 libraries.extend(saf_performance_lib)
 
+library_dirs.extend([saf_path, home_dir, this_dir])
+
+
 print("Compiling _safpy with:")
 print(f"C_Header_Source: {c_header_source}")
 print(f"include_dirs: {include_dirs}")

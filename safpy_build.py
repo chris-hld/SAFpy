@@ -211,6 +211,7 @@ void transientDucker_apply(void * hDucker,
 # to make the declarated functions, types and globals available,
 # so it is often just the "#include".
 c_header_source += f"""
+    #include <complex.h> 
     #include "{saf_path}/framework/include/saf.h"  // the C header of the lib
     """
 libraries.append(saf_path + "/build/framework/saf")  # lib name, for the linker

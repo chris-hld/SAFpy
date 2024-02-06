@@ -19,29 +19,51 @@ extra_link_args = []
 
 # Sensible default, please adjust if needed.
 # In case of doubt, you can also check numpy.show_config() for its BLAS
+print("Detected platform: " + sys.platform) 
 if sys.platform == "darwin":
     print("SAFPY using default Apple Accelerate")
     extra_link_args.extend(['-Wl,-framework', '-Wl,Accelerate'])
-else:
+elif sys.platform == "linux":
     print("SAFPY using default OpenBLAS/LAPACKE")
     saf_performance_lib.extend(["openblas", "lapacke"])
-
+elif sys.platform == "win32":
+    print("SAFPY using default OpenBLAS/LAPACKE")
+    saf_performance_lib.extend(["libopenblas"])  # should include lapacke
+else:
+    print("No defaults.")
 
 # cdef() expects a single string declaring the C types, functions and
 # globals needed to use the shared object. It must be in valid C syntax.
 ffibuilder.cdef("""
 
 #define SAF_VERSION ...
+                
+""")
 
-typedef float _Complex float_complex;
-typedef double _Complex double_complex;
+if sys.platform != "win32":
+    ffibuilder.cdef("""
+
+    typedef float _Complex float_complex;
+    typedef double _Complex double_complex;
+
+    """)
+else:
+    ffibuilder.cdef("""
+
+    typedef struct 
+    {
+        float _Val[2];
+    } float_complex;
+
+    """)
+
+ffibuilder.cdef("""
 
 typedef enum _AFSTFT_FDDATA_FORMAT{
     AFSTFT_BANDS_CH_TIME, /**< nBands x nChannels x nTimeHops */
     AFSTFT_TIME_CH_BANDS  /**< nTimeHops x nChannels x nBands */
 
 }AFSTFT_FDDATA_FORMAT;
-
 
 void *malloc(size_t size);
 void free(void *ptr);
@@ -200,6 +222,9 @@ c_header_source += f"""
 libraries.append(saf_path + "/build/framework/saf")  # lib name, for the linker
 
 libraries.extend(saf_performance_lib)
+
+library_dirs.extend([this_dir, saf_path])
+
 
 print("Compiling _safpy with:")
 print(f"C_Header_Source: {c_header_source}")

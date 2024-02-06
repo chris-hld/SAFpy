@@ -23,10 +23,14 @@ print("Detected platform: " + sys.platform)
 if sys.platform == "darwin":
     print("SAFPY using default Apple Accelerate")
     extra_link_args.extend(['-Wl,-framework', '-Wl,Accelerate'])
-else:
+elif sys.platform == "linux":
     print("SAFPY using default OpenBLAS/LAPACKE")
     saf_performance_lib.extend(["openblas", "lapacke"])
-
+elif sys.platform == "win32":
+    print("SAFPY using default OpenBLAS/LAPACKE")
+    saf_performance_lib.extend(["libopenblas"])  # should include lapacke
+else:
+    print("No defaults.")
 
 # cdef() expects a single string declaring the C types, functions and
 # globals needed to use the shared object. It must be in valid C syntax.

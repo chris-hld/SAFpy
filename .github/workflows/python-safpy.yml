@@ -47,7 +47,9 @@ jobs:
             elif [ "$RUNNER_OS" == "Windows" ]; then
               curl https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.26/OpenBLAS-0.3.26-x64.zip -L -o tmp.zip
               7z x ./tmp.zip -oOpenBLAS
-              cp ./OpenBLAS/lib/libopenblas.lib ./libopenblas.lib
+              cp ./OpenBLAS/lib/libopenblas.lib $GITHUB_WORKSPACE
+              cp ./OpenBLAS/bin/libopenblas.dll $GITHUB_WORKSPACE
+              echo "$GITHUB_WORKSPACE" >> $GITHUB_PATH
               ls
               echo $PWD
             else
@@ -89,7 +91,7 @@ jobs:
             cp ./Spatial_Audio_Framework/build/test/Debug/saf_test.exe ./Spatial_Audio_Framework/build/test/
             cp ./Spatial_Audio_Framework/build/framework/Debug/saf.lib ./Spatial_Audio_Framework/build/framework/
 
-            # ./Spatial_Audio_Framework/build/test/saf_test.exe # fails with 127
+            ./Spatial_Audio_Framework/build/test/saf_test.exe # fails with 127
           fi
       shell: bash
 

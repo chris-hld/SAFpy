@@ -46,10 +46,7 @@ if sys.platform != "win32":
 else:
     ffibuilder.cdef("""
 
-    typedef struct 
-    {
-        float re, im;
-    } float_complex;
+    typedef _C_float_complex float_complex;
 
     """)
 

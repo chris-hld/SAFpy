@@ -47,7 +47,7 @@ jobs:
             elif [ "$RUNNER_OS" == "Windows" ]; then
               curl https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.26/OpenBLAS-0.3.26-x64.zip -L -o tmp.zip
               7z x ./tmp.zip -oOpenBLAS
-              cp ./OpenBLAS/lib/* ./
+              cp ./OpenBLAS/lib/libopenblas.lib ./
               ls
               echo $PWD
             else

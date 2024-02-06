@@ -19,6 +19,7 @@ extra_link_args = []
 
 # Sensible default, please adjust if needed.
 # In case of doubt, you can also check numpy.show_config() for its BLAS
+print("Detected platform: " + sys.platform) 
 if sys.platform == "darwin":
     print("SAFPY using default Apple Accelerate")
     extra_link_args.extend(['-Wl,-framework', '-Wl,Accelerate'])
@@ -32,16 +33,31 @@ else:
 ffibuilder.cdef("""
 
 #define SAF_VERSION ...
+                
+""")
 
-typedef float _Complex float_complex;
-typedef double _Complex double_complex;
+if sys.platform != "win32":
+    ffibuilder.cdef("""
+                    
+    typedef float _Complex float_complex;
+    typedef double _Complex double_complex;
+
+    """)
+else:
+    ffibuilder.cdef("""
+                    
+    typedef _Fcomplex float_complex;
+    typedef _Dcomplex double_complex;
+
+    """)
+
+ffibuilder.cdef("""
 
 typedef enum _AFSTFT_FDDATA_FORMAT{
     AFSTFT_BANDS_CH_TIME, /**< nBands x nChannels x nTimeHops */
     AFSTFT_TIME_CH_BANDS  /**< nTimeHops x nChannels x nBands */
 
 }AFSTFT_FDDATA_FORMAT;
-
 
 void *malloc(size_t size);
 void free(void *ptr);

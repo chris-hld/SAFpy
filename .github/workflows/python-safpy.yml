@@ -45,7 +45,6 @@ jobs:
             elif [ "$RUNNER_OS" == "macOS" ]; then
               brew install openblas
             elif [ "$RUNNER_OS" == "Windows" ]; then
-              choco install ninja
               curl https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.26/OpenBLAS-0.3.26-x64.zip -L -o tmp.zip
               7z x ./tmp.zip -oOpenBLAS
               ls
@@ -100,11 +99,7 @@ jobs:
 
     - name: Build package
       run: |
-        if [ "$RUNNER_OS" != "Windows" ]; then
-          python setup.py build
-        else
-          python setup.py build --compiler=mingw32
-        fi
+        python setup.py build
       shell: bash
 
     - name: Build and install package

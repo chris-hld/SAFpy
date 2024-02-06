@@ -38,16 +38,18 @@ ffibuilder.cdef("""
 
 if sys.platform != "win32":
     ffibuilder.cdef("""
-                    
+
     typedef float _Complex float_complex;
     typedef double _Complex double_complex;
 
     """)
 else:
     ffibuilder.cdef("""
-                    
-    typedef _Fcomplex float_complex;
-    typedef _Dcomplex double_complex;
+
+    typedef struct 
+    {
+        float re, im;
+    } float_complex;
 
     """)
 

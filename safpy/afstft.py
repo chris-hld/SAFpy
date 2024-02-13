@@ -47,7 +47,7 @@ class AfSTFT():
         lib.afSTFT_create(afstft_phandle,
                           num_ch_in, num_ch_out, hopsize,
                           LOWDELAYMODE, HYBRIDMODE, afstft_format)
-        print(f"Created AFSTFT instance at {self._afstft_phandle[0]}")
+        # print(f"Created AFSTFT instance at {self._afstft_phandle[0]}")
 
         # flush
         self.clear_buffers()
@@ -72,7 +72,7 @@ class AfSTFT():
         None.
 
         """
-        print(f"Destroying AFSTFT instance at {self._afstft_phandle[0]}")
+        # print(f"Destroying AFSTFT instance at {self._afstft_phandle[0]}")
         lib.afSTFT_destroy(self._afstft_phandle)
 
     @property

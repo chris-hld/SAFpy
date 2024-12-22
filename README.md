@@ -13,9 +13,9 @@ Install
 ---
 1. Clone SAFpy, SAF is provided as a submodule, and change to the folder
 
-```git clone --recursive https://github.com/chris-hld/SAFpy && cd SAFpy```
+```git clone --recursive --depth=1 https://github.com/chris-hld/SAFpy && cd SAFpy```
 
-2. Go to the SAF folder and compile SAF, see instructions in its [docs](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/README.md). 
+2. Go to the Spatial_Audio_Framework folder and compile, see instructions in its [docs](https://github.com/leomccormack/Spatial_Audio_Framework/blob/master/README.md). 
 For example with
 
 ```cmake -S . -B build -DSAF_PERFORMANCE_LIB=SAF_USE_OPEN_BLAS_AND_LAPACKE && cmake --build ./build```
